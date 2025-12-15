@@ -9,17 +9,36 @@ export const Logo: React.FC<IconSvgProps> = ({
   ...props
 }) => (
   <svg
-    fill="none"
-    height={size || height}
-    viewBox="0 0 32 32"
-    width={size || width}
-    {...props}
+    className="w-14 h-14"
+    width="256"
+    height="256"
+    viewBox="0 0 256 256"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-label="Karvan Icon"
   >
-    <path
-      clipRule="evenodd"
-      d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
-      fill="currentColor"
-      fillRule="evenodd"
+    <defs>
+      <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="var(--karvan-start, #000000)" />
+        <stop offset="100%" stopColor="var(--karvan-end,   #114466)" />
+      </linearGradient>
+
+      <mask id="holes" maskUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="256" height="256" rx="36" fill="#fff" />
+
+        <circle cx="104" cy="106" r="16" fill="#000" />
+        <circle cx="128" cy="146.56" r="16" fill="#000" />
+        <circle cx="152" cy="106" r="16" fill="#000" />
+      </mask>
+    </defs>
+
+    <rect
+      x="16"
+      y="16"
+      width="224"
+      height="224"
+      rx="36"
+      fill="url(#grad)"
+      mask="url(#holes)"
     />
   </svg>
 );

@@ -1,0 +1,22 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-label="Karvan Icon">
+  <defs>
+    <!-- رنگ‌ها رو با CSS هم می‌تونی عوض کنی -->
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"  stop-color="var(--karvan-start, #000000)"/>
+      <stop offset="100%" stop-color="var(--karvan-end,   #114466)"/>
+    </linearGradient>
+
+    <!-- ماسک برای «خالی کردن» سه دایره (نقاط هم‌رنگ پس‌زمینه) -->
+    <mask id="holes" maskUnits="userSpaceOnUse">
+      <!-- سفید = نمایش، مشکی = سوراخ -->
+      <rect x="0" y="0" width="256" height="256" rx="36" fill="#fff"/>
+      <!-- سه نقطه کنار هم -->
+      <circle cx="104" cy="106" r="16" fill="#000"/>
+      <circle cx="128" cy="146.56" r="16" fill="#000"/>
+      <circle cx="152" cy="106" r="16" fill="#000"/>
+    </mask>
+  </defs>
+
+  <!-- بدنه‌ی مربع با گوشه‌های گرد و گرادینت، با ماسک نقاط -->
+  <rect x="16" y="16" width="224" height="224" rx="36" fill="url(#grad)" mask="url(#holes)"/>
+</svg>
