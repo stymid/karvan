@@ -9,9 +9,9 @@ export const Logo: React.FC<IconSvgProps> = ({
   ...props
 }) => (
   <svg
-    className="w-14 h-14"
-    width="256"
-    height="256"
+    // className="w- h-12"
+    width="45"
+    height="45"
     viewBox="0 0 256 256"
     xmlns="http://www.w3.org/2000/svg"
     aria-label="Karvan Icon"
