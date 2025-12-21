@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@heroui/button";
 import {
   Dropdown,
@@ -11,6 +12,7 @@ import { PlusIcon } from "../icons/plus-icon";
 import { cn } from "tailwind-variants";
 import { PresentationGraphIcon } from "../icons/presentation-graph-icon";
 import { AddCircleIcon } from "../icons/add-circle-icon";
+import { NavbarItem } from "@heroui/navbar";
 
 export const DeleteDocumentIcon = () => {
   return (
@@ -44,7 +46,7 @@ const TaskItem = () => {
   const iconClasses = "text-xl text-default-500 pointer-events-none shrink-0";
 
   return (
-    <>
+    <NavbarItem className="hidden sm:flex gap-2 items-center">
       <Dropdown
         showArrow
         classNames={{
@@ -100,7 +102,7 @@ const TaskItem = () => {
           </DropdownSection>
         </DropdownMenu>
       </Dropdown>
-    </>
+    </NavbarItem>
   );
 };
 

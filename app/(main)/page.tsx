@@ -1,6 +1,5 @@
 import { title, subtitle } from "@/components/primitives";
 
-import { Navbar } from "@/components/navbar";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Home() {

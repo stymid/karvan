@@ -1,12 +1,13 @@
 "use client";
 import { Input } from "@heroui/input";
 import { Kbd } from "@heroui/kbd";
-import React from "react";
+import React, { ReactNode } from "react";
 import { SearchIcon } from "../icons";
 
 const SearchInput = () => {
   return (
     <Input
+      disabled
       aria-label="Search"
       size="sm"
       classNames={{
