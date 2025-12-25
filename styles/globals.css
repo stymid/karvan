@@ -93,6 +93,9 @@
   --content4: #cbd5e1;
   --content4-foreground: #0f172a;
 
+  --karvan-start: #114466;
+  --karvan-end: #338fbb;
+
   --focus: #114466;
   --overlay: #000000;
 
@@ -189,6 +192,9 @@
   --content3-foreground: #ffffff;
   --content4: #0e3a57;
   --content4-foreground: #ffffff;
+
+  --karvan-start: #1c7598;
+  --karvan-end: #cce7f2;
 
   --focus: #176080;
   --overlay: #ffffff;

@@ -2,8 +2,8 @@
   <defs>
     <!-- رنگ‌ها رو با CSS هم می‌تونی عوض کنی -->
     <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%"  stop-color="var(--karvan-start, #000000)"/>
-      <stop offset="100%" stop-color="var(--karvan-end,   #114466)"/>
+      <stop offset="0%"  stop-color="#1c7598"/>
+      <stop offset="100%" stop-color="#cce7f2"/>
     </linearGradient>
 
     <!-- ماسک برای «خالی کردن» سه دایره (نقاط هم‌رنگ پس‌زمینه) -->

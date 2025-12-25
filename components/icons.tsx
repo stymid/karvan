@@ -2,47 +2,6 @@ import * as React from "react";
 
 import { IconSvgProps } from "@/types";
 
-export const Logo: React.FC<IconSvgProps> = ({
-  size = 36,
-  width,
-  height,
-  ...props
-}) => (
-  <svg
-    // className="w- h-12"
-    width="45"
-    height="45"
-    viewBox="0 0 256 256"
-    xmlns="http://www.w3.org/2000/svg"
-    aria-label="Karvan Icon"
-  >
-    <defs>
-      <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stopColor="var(--karvan-start, #000000)" />
-        <stop offset="100%" stopColor="var(--karvan-end,   #114466)" />
-      </linearGradient>
-
-      <mask id="holes" maskUnits="userSpaceOnUse">
-        <rect x="0" y="0" width="256" height="256" rx="36" fill="#fff" />
-
-        <circle cx="104" cy="106" r="16" fill="#000" />
-        <circle cx="128" cy="146.56" r="16" fill="#000" />
-        <circle cx="152" cy="106" r="16" fill="#000" />
-      </mask>
-    </defs>
-
-    <rect
-      x="16"
-      y="16"
-      width="224"
-      height="224"
-      rx="36"
-      fill="url(#grad)"
-      mask="url(#holes)"
-    />
-  </svg>
-);
-
 export const DiscordIcon: React.FC<IconSvgProps> = ({
   size = 24,
   width,
