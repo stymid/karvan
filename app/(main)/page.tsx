@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 export default async function Home() {
   const supabase = await createClient();
 
-  const data = await supabase.from("instruments").select("*");
+  const data = await supabase.from("profiles").select("*");
   console.log(data);
 
   return (

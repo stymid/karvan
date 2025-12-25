@@ -5,12 +5,8 @@ import React from "react";
 
 const ProjectItem = () => {
   return (
-    <NavbarItem className="flex items-center">
-      <Link
-        className="hidden sm:flex items-center "
-        aria-label="projects"
-        href={"/project"}
-      >
+    <NavbarItem className="hidden sm:flex items-center">
+      <Link aria-label="projects" href={"/project"}>
         <BookBookmarkIcon className="fill-white" />
       </Link>
     </NavbarItem>
