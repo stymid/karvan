@@ -3,8 +3,9 @@ import React from "react";
 import Drawer from "./drawer";
 import DrawerContent from "./drawer/drawer-content";
 import NextLink from "next/link";
-import { Logo } from "@/components/icons";
+
 import DrawerContentWrapper from "./drawer/drawer-content-wrapper";
+import { LogoIcon } from "@/components/icons/logo-icon";
 
 const RightContent = () => {
   return (
@@ -14,7 +15,7 @@ const RightContent = () => {
           <DrawerContentWrapper />
         </Drawer>
         <NextLink className="flex justify-start items-center gap-1" href="/">
-          <Logo />
+          <LogoIcon />
           <p className="font-extrabold">کاروان</p>
         </NextLink>
       </NavbarBrand>
