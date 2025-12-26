@@ -39,7 +39,6 @@ export default function Page() {
     signupInitialState
   );
   const [formErrors, setFormErrors] = useState(state?.errors ?? {});
-  console.log(state, "component");
 
   const changeErrorState = (key: SignupFieldErrors) => {
     setFormErrors((prev) => ({

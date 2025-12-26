@@ -1,23 +1,22 @@
 "use server";
-import { signupSchema } from "./schema";
+import { signinSchema } from "./schema";
 import { SignupFormState } from "./page";
 import { createClient } from "@/utils/supabase/server";
 
-export async function createUser(
+export async function signinUser(
   prevState: SignupFormState,
   formData: FormData
 ): Promise<SignupFormState> {
   console.log(
-    "srart-------------------------------------------------------------start"
+    "srart--------------------------------signin-----------------------------start"
   );
 
   const values = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
-    confirmpassword: formData.get("confirmpassword") as string,
   };
 
-  const result = signupSchema.safeParse(values);
+  const result = signinSchema.safeParse(values);
 
   if (!result.success) {
     const errors: Record<string, string[]> = {};
@@ -44,16 +43,13 @@ export async function createUser(
   });
 
   const supabase = await createClient();
-  const result1 = await supabase.auth.signUp({
+  const result1 = await supabase.auth.signInWithPassword({
     email: values.email,
     password: values.password,
-    options: {
-      emailRedirectTo: "http://localhost:3003/welcome",
-    },
   });
   console.log(result1);
   console.log(
-    "end-------------------------------------------------------------end"
+    "end-------------------------------signin------------------------------end"
   );
   return {
     values,
