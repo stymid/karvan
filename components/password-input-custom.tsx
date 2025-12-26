@@ -2,40 +2,48 @@ import { Input } from "@heroui/input";
 import React, { FormEvent, useEffect, useState } from "react";
 import { EyeIcon } from "./icons/eye-icon";
 import { EyeClosedIcon } from "./icons/eye-closed-icon";
+import { FormFieldErrors } from "@/app/(auth)/signup/page";
 
-const PasswordInputCustom = ({
+function PasswordInputCustom<T extends string>({
   label,
   name,
   placeholder,
   defaultValue,
-  isInvalid,
-  errorMessage,
   onChange,
+  changeErrorState,
+  formErrors,
 }: {
   label: string;
-  name: string;
+  name: T;
   placeholder: string;
   defaultValue?: string | undefined;
-  isInvalid?: boolean;
-  errorMessage?: JSX.Element | undefined;
   onChange?: (event: FormEvent) => void;
-}) => {
+  changeErrorState: (name: T) => void;
+  formErrors: FormFieldErrors<T>;
+}) {
   const [isVisible, setIsVisible] = useState(false);
 
-  const [passValue, setPassValue] = useState("");
+  const [value, setValue] = useState("");
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   useEffect(() => {
-    setPassValue(defaultValue || "");
+    setValue(defaultValue || "");
   }, []);
   return (
     <Input
-      errorMessage={errorMessage}
-      isInvalid={isInvalid}
+      errorMessage={
+        formErrors?.[name] && (
+          <ul className="mt-1 text-sm text-danger space-y-1">
+            {formErrors?.[name]?.map((msg, i) => <li key={i}>• {msg}</li>)}
+          </ul>
+        )
+      }
+      isInvalid={!!formErrors?.[name]}
       defaultValue={defaultValue}
       dir="ltr"
       classNames={{
+        inputWrapper: "dark:bg-default-200",
         input: "text-left placeholder:text-right",
         helperWrapper: "text-right",
       }}
@@ -47,9 +55,10 @@ const PasswordInputCustom = ({
       type={isVisible ? "text" : "password"}
       onChange={(e) => {
         onChange ? onChange(e) : null;
-        setPassValue(e.target.value);
+        changeErrorState(name);
+        setValue(e.target.value);
       }}
-      value={passValue}
+      value={value}
       startContent={
         <button
           aria-label="toggle password visibility"
@@ -57,11 +66,11 @@ const PasswordInputCustom = ({
           type="button"
           onClick={toggleVisibility}
         >
-          {passValue ? (
+          {value ? (
             isVisible ? (
-              <EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+              <EyeIcon className="text-2xl stroke-default-600 pointer-events-none text" />
             ) : (
-              <EyeClosedIcon className="text-2xl text-default-400 pointer-events-none" />
+              <EyeClosedIcon className="text-2xl fill-default-600 pointer-events-none" />
             )
           ) : (
             <span className="block" /> // placeholder space
@@ -70,6 +79,6 @@ const PasswordInputCustom = ({
       }
     />
   );
-};
+}
 
 export default PasswordInputCustom;

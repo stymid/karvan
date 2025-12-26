@@ -11,7 +11,7 @@ export async function createUser(
   const values = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
-    confirmpassword: formData.get("confirm_password") as string,
+    confirmpassword: formData.get("confirmpassword") as string,
   };
   console.log(values, 1);
 

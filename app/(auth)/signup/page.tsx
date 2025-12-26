@@ -4,7 +4,6 @@ import { CardBody, CardFooter, CardHeader } from "@heroui/card";
 
 import { Divider } from "@heroui/divider";
 
-import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { Form } from "@heroui/form";
@@ -13,6 +12,7 @@ import PasswordInputCustom from "@/components/password-input-custom";
 import { createUser } from "./acion";
 import { signupSchema } from "./schema";
 import z from "zod";
+import EmailInputCustom from "@/components/email-input-custom";
 
 export type SignupFormData = z.infer<typeof signupSchema>;
 
@@ -25,8 +25,8 @@ export const signupInitialState: SignupFormState = {
 };
 
 export type SignupFieldErrors = "email" | "password" | "confirmpassword";
-
-export type SignupErrors = Partial<Record<SignupFieldErrors, string[]>>;
+export type FormFieldErrors<T extends string> = Partial<Record<T, string[]>>;
+export type SignupErrors = FormFieldErrors<SignupFieldErrors>;
 
 export type SignupFormState = {
   values: Partial<SignupFormData>;
@@ -41,6 +41,13 @@ export default function Page() {
   const [formErrors, setFormErrors] = useState(state?.errors ?? {});
   console.log(state, "component");
 
+  const changeErrorState = (key: SignupFieldErrors) => {
+    setFormErrors((prev) => ({
+      ...prev,
+      [key]: undefined,
+    }));
+  };
+
   useEffect(() => {
     if (state.errors) setFormErrors(state.errors);
   }, [state]);
@@ -54,76 +61,28 @@ export default function Page() {
       </CardHeader>
       <CardBody>
         <Form action={formAction} className="flex flex-col gap-4">
-          <Input
-            onChange={() => {
-              setFormErrors((prev) => ({
-                ...prev,
-                email: undefined,
-              }));
-            }}
-            isInvalid={!!formErrors?.email}
-            errorMessage={
-              formErrors?.email && (
-                <ul className="mt-1 text-sm text-danger space-y-1">
-                  {formErrors.email.map((msg, i) => (
-                    <li key={i}>• {msg}</li>
-                  ))}
-                </ul>
-              )
-            }
+          <EmailInputCustom
+            changeErrorState={changeErrorState}
+            formErrors={formErrors}
             defaultValue={state.values.email}
-            dir="ltr"
-            className=""
-            classNames={{ input: "text-left placeholder:text-right" }}
-            labelPlacement="outside"
+            label="ایمیل"
             name="email"
             placeholder="ایمیل خود را وارد کنید"
-            label="ایمیل"
-            type="email"
-            isRequired
           />
           <PasswordInputCustom
-            onChange={() => {
-              setFormErrors((prev) => ({
-                ...prev,
-                password: undefined,
-              }));
-            }}
-            isInvalid={!!formErrors?.password}
-            errorMessage={
-              formErrors?.password && (
-                <ul className="mt-1 text-sm text-danger space-y-1">
-                  {formErrors.password?.map((msg, i) => (
-                    <li key={i}>• {msg}</li>
-                  ))}
-                </ul>
-              )
-            }
+            changeErrorState={changeErrorState}
+            formErrors={formErrors}
             defaultValue={state.values.password}
             label="رمز"
             name="password"
             placeholder="رمز خودراوارد کنید"
           />
           <PasswordInputCustom
-            onChange={() => {
-              setFormErrors((prev) => ({
-                ...prev,
-                confirmpassword: undefined,
-              }));
-            }}
-            isInvalid={!!formErrors?.confirmpassword}
-            errorMessage={
-              formErrors?.confirmpassword && (
-                <ul className="mt-1 text-sm text-danger space-y-1">
-                  {formErrors.confirmpassword.map((msg, i) => (
-                    <li key={i}>• {msg}</li>
-                  ))}
-                </ul>
-              )
-            }
+            changeErrorState={changeErrorState}
+            formErrors={formErrors}
             defaultValue={state.values.confirmpassword}
             label="تایید رمز"
-            name="confirm_password"
+            name="confirmpassword"
             placeholder="رمز خود را دوباره تکرار کنید"
           />
           <Button
