@@ -32,6 +32,7 @@ export type SignupFormState = {
   values: Partial<SignupFormData>;
   errors?: SignupErrors;
   success?: boolean;
+  message?: { type: string; content: string };
 };
 export default function Page() {
   const [state, formAction, pending] = useActionState(
@@ -50,6 +51,13 @@ export default function Page() {
   useEffect(() => {
     if (state.errors) setFormErrors(state.errors);
   }, [state]);
+  if (state.success)
+    return (
+      <div>
+        یک لنیک فعال سازی برای جیمیل شما ارسال شده
+        <Link href="/signin"> وارد شوید</Link>
+      </div>
+    );
   return (
     <>
       <CardHeader className="flex flex-col gap-1 text-center">
@@ -85,6 +93,7 @@ export default function Page() {
             placeholder="رمز خود را دوباره تکرار کنید"
           />
           <Button
+            onPress={() => {}}
             type="submit"
             color="primary"
             className="mt-2 w-full"

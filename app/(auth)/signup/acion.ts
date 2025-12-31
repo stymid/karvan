@@ -17,12 +17,12 @@ export async function createUser(
     confirmpassword: formData.get("confirmpassword") as string,
   };
 
-  const result = signupSchema.safeParse(values);
+  const parsedResult = signupSchema.safeParse(values);
 
-  if (!result.success) {
+  if (!parsedResult.success) {
     const errors: Record<string, string[]> = {};
 
-    result.error.issues.forEach((issue) => {
+    parsedResult.error.issues.forEach((issue) => {
       const field = issue.path[0] as string;
 
       if (!errors[field]) {
@@ -42,16 +42,17 @@ export async function createUser(
     email: values.email,
     password: values.password,
   });
-
-  const supabase = await createClient();
-  const result1 = await supabase.auth.signUp({
-    email: values.email,
-    password: values.password,
-    options: {
-      emailRedirectTo: "http://localhost:3003/welcome",
-    },
-  });
-  console.log(result1);
+  try {
+    const supabase = await createClient();
+    const result = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
+      options: {
+        emailRedirectTo: "http://localhost:3003/welcome",
+      },
+    });
+    console.log(result);
+  } catch (err) {}
   console.log(
     "end-------------------------------------------------------------end"
   );
