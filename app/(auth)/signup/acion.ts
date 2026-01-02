@@ -50,7 +50,7 @@ export async function createUser(
     email: values.email,
     password: values.password,
     options: {
-      emailRedirectTo: "http://localhost:3003/verify-email",
+      emailRedirectTo: "http://localhost:3003/verify-email/callback",
     },
   });
   console.log(supabaseResult);
