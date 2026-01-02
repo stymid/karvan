@@ -13,7 +13,16 @@ import { createUser } from "./acion";
 import { signupSchema } from "./schema";
 import z from "zod";
 import EmailInputCustom from "@/components/email-input-custom";
+import { createClient } from "@/utils/supabase/client";
+import { AuthError, User, Session } from "@supabase/supabase-js";
+import { addToast } from "@heroui/toast";
+import { getSupabaseErrorMessage } from "@/utils/supabase/error-messages";
 
+type SupabaseSignUpResponse = {
+  user: User | null;
+  session: Session | null;
+  error: AuthError | null;
+};
 export type SignupFormData = z.infer<typeof signupSchema>;
 
 export const signupInitialState: SignupFormState = {
@@ -32,7 +41,7 @@ export type SignupFormState = {
   values: Partial<SignupFormData>;
   errors?: SignupErrors;
   success?: boolean;
-  message?: { type: string; content: string };
+  supabaseResponse?: SupabaseSignUpResponse;
 };
 export default function Page() {
   const [state, formAction, pending] = useActionState(
@@ -40,6 +49,7 @@ export default function Page() {
     signupInitialState
   );
   const [formErrors, setFormErrors] = useState(state?.errors ?? {});
+  const [supabaseRes, setSupabaseRes] = useState<SupabaseSignUpResponse>();
 
   const changeErrorState = (key: SignupFieldErrors) => {
     setFormErrors((prev) => ({
@@ -49,9 +59,15 @@ export default function Page() {
   };
 
   useEffect(() => {
-    if (state.errors) setFormErrors(state.errors);
+    if (state.errors) return setFormErrors(state.errors);
+    setSupabaseRes(state.supabaseResponse);
   }, [state]);
-  if (state.success)
+  console.log(supabaseRes, 80);
+  if (supabaseRes?.error?.code)
+    addToast({
+      description: getSupabaseErrorMessage(supabaseRes?.error?.code),
+    });
+  if (supabaseRes?.user?.id)
     return (
       <div>
         یک لنیک فعال سازی برای جیمیل شما ارسال شده

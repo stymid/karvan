@@ -2,6 +2,7 @@
 import { signupSchema } from "./schema";
 import { SignupFormState } from "./page";
 import { createClient } from "@/utils/supabase/server";
+import { AuthResponse } from "@supabase/supabase-js";
 
 export async function createUser(
   prevState: SignupFormState,
@@ -42,22 +43,28 @@ export async function createUser(
     email: values.email,
     password: values.password,
   });
-  try {
-    const supabase = await createClient();
-    const result = await supabase.auth.signUp({
-      email: values.email,
-      password: values.password,
-      options: {
-        emailRedirectTo: "http://localhost:3003/welcome",
-      },
-    });
-    console.log(result);
-  } catch (err) {}
+
+  let supabaseResult: AuthResponse;
+  const supabase = await createClient();
+  supabaseResult = await supabase.auth.signUp({
+    email: values.email,
+    password: values.password,
+    options: {
+      emailRedirectTo: "http://localhost:3003/verify-email",
+    },
+  });
+  console.log(supabaseResult);
+
+  const {
+    data: { session, user },
+    error,
+  } = supabaseResult;
   console.log(
     "end-------------------------------------------------------------end"
   );
   return {
     values,
     success: true,
+    supabaseResponse: { error, session, user },
   };
 }
