@@ -14,14 +14,13 @@ export async function GET(request: Request) {
   const supabase = await createClient();
 
   const { error, data } = await supabase.auth.exchangeCodeForSession(code);
-  console.log("route", data);
 
   if (error) {
     return NextResponse.redirect(
       new URL(
         `/signin?e=${encodeURIComponent(error.code ?? "verify_failed")}`,
-        url.origin
-      )
+        url.origin,
+      ),
     );
   }
 

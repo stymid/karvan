@@ -1,6 +1,7 @@
 import { LogoIcon } from "@/components/icons/logo-icon";
 import { Card } from "@heroui/card";
 import { ReactNode } from "react";
+import "@/styles/cropper.css";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (

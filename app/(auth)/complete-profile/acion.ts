@@ -1,20 +1,20 @@
 "use server";
-import { signupSchema } from "./schema";
-import { SignupFormState } from "./page";
+import { profileSchema } from "./schema";
+import { CompleteProfileFormState } from "./page";
 import { createClient } from "@/utils/supabase/server";
 import { AuthResponse } from "@supabase/supabase-js";
 
 export async function createUser(
-  prevState: SignupFormState,
+  prevState: CompleteProfileFormState,
   formData: FormData,
-): Promise<SignupFormState> {
+): Promise<CompleteProfileFormState> {
   const values = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
     confirmpassword: formData.get("confirmpassword") as string,
   };
 
-  const parsedResult = signupSchema.safeParse(values);
+  const parsedResult = profileSchema.safeParse(values);
 
   if (!parsedResult.success) {
     const errors: Record<string, string[]> = {};
@@ -27,6 +27,7 @@ export async function createUser(
       }
 
       errors[field].push(issue.message);
+      console.log(errors);
     });
 
     return {

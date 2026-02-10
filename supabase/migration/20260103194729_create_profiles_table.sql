@@ -21,7 +21,7 @@ create table profiles (
   last_name text,
 
   avatar_url text,
-  bio text,
+  biography text,
   phone text,
   birth_date date,
 

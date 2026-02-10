@@ -13,7 +13,7 @@ import { createUser } from "./acion";
 import { signupSchema } from "./schema";
 import z from "zod";
 import EmailInputCustom from "@/components/email-input-custom";
-import { createClient } from "@/utils/supabase/client";
+
 import { AuthError, User, Session } from "@supabase/supabase-js";
 import { addToast } from "@heroui/toast";
 import { getSupabaseErrorMessage } from "@/utils/supabase/error-messages";
@@ -46,7 +46,7 @@ export type SignupFormState = {
 export default function Page() {
   const [state, formAction, pending] = useActionState(
     createUser,
-    signupInitialState
+    signupInitialState,
   );
   const [formErrors, setFormErrors] = useState(state?.errors ?? {});
   const [supabaseRes, setSupabaseRes] = useState<SupabaseSignUpResponse>();

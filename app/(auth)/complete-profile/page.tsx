@@ -1,109 +1,170 @@
 "use client";
-import { CameraAddIcon } from "@/components/icons/camera-add-icon";
 
-import { GalleryEditIcon } from "@/components/icons/gallery-edit-icon";
-import { GalleryIcon } from "@/components/icons/gallery-icon";
-import { GalleryRemoveIcon } from "@/components/icons/gallery-remove-icon";
-import { createClient } from "@/utils/supabase/client";
-import { Avatar } from "@heroui/avatar";
+import AvatarUploader from "@/components/avatar-uploader";
+import React from "react";
+import { CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Divider } from "@heroui/divider";
+import { Button } from "@heroui/button";
+import { Link } from "@heroui/link";
+import { Form } from "@heroui/form";
+import { useActionState, useEffect, useState } from "react";
 
-import { Modal, ModalContent, useDisclosure } from "@heroui/modal";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { createUser } from "./acion";
+import { profileSchema } from "./schema";
+import z from "zod";
 
+import { AuthError, User, Session } from "@supabase/supabase-js";
+import { addToast } from "@heroui/toast";
+import { getSupabaseErrorMessage } from "@/utils/supabase/error-messages";
+import InputCustom from "@/components/input-custom";
+
+type SupabaseSignUpResponse = {
+  user: User | null;
+  session: Session | null;
+  error: AuthError | null;
+};
+export type CompleteProfileFormData = z.infer<typeof profileSchema>;
+
+export const completeProfileFormInitialState: CompleteProfileFormState = {
+  values: {
+    email: "",
+    first_name: "",
+    last_name: "",
+    username: "",
+    biography: "",
+    phone: "",
+    birth_date: "",
+    work_status: undefined,
+  },
+};
+
+export type ProfileFieldName =
+  | "username"
+  | "first_name"
+  | "last_name"
+  | "email"
+  | "biography"
+  | "phone"
+  | "birth_date"
+  | "work_status";
+export type FormFieldErrors<T extends string> = Partial<Record<T, string[]>>;
+export type CompleteProfileErrors = FormFieldErrors<ProfileFieldName>;
+
+export type CompleteProfileFormState = {
+  values: Partial<CompleteProfileFormData>;
+  errors?: CompleteProfileErrors;
+  success?: boolean;
+  supabaseResponse?: SupabaseSignUpResponse;
+};
 const CompleteProfile = () => {
-  const [avatar, setAvatar] = useState<string>("");
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [state, formAction, pending] = useActionState(
+    createUser,
+    completeProfileFormInitialState,
+  );
+  const [formErrors, setFormErrors] = useState(state?.errors ?? {});
+  const [supabaseRes, setSupabaseRes] = useState<SupabaseSignUpResponse>();
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const handleOpen = () => {
-    onOpen();
+  const changeErrorState = (key: ProfileFieldName) => {
+    setFormErrors((prev) => ({
+      ...prev,
+      [key]: undefined,
+    }));
   };
 
   useEffect(() => {
-    async function g() {
-      const supabase = createClient();
-      const { data } = await supabase.auth.getUser();
-      const { user } = data;
-      console.log(data);
-
-      const { data: h } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user?.id)
-        .maybeSingle();
-      console.log(h);
-    }
-    g();
-  }, []);
-  console.log(inputRef.current?.value);
-  console.log(avatar, "avatar");
-
-  return (
-    <div className="flex justify-center">
-      <div className="flex flex-col gap-3">
-        <button
-          className="relative max-w-min"
-          onClick={() => {
-            inputRef.current?.click();
-          }}
-        >
-          <Avatar
-            classNames={{
-              base: "bg-linear-to-br from-[#FFB457] to-[#FF705B] brightness-80 grayscale-40",
-            }}
-            size="lg"
-            src={avatar}
-          />
-          {avatar ? (
-            <GalleryEditIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 stroke-white" />
-          ) : (
-            <CameraAddIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 stroke-white" />
-          )}
-        </button>
-        <input
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-
-            const objectUrl = URL.createObjectURL(file);
-            console.log(objectUrl);
-            setAvatar(objectUrl);
-          }}
-          ref={inputRef}
-          className="hidden"
-          type="file"
-        />
-        <div className="flex justify-between">
-          <button
-            onClick={() => {
-              setAvatar("");
-            }}
-          >
-            <GalleryRemoveIcon className="fill-black dark:fill-white" />
-          </button>
-
-          <button onClick={() => handleOpen()}>
-            <GalleryIcon />
-          </button>
-        </div>
+    if (state.errors) return setFormErrors(state.errors);
+    setSupabaseRes(state.supabaseResponse);
+  }, [state]);
+  console.log(supabaseRes);
+  if (supabaseRes?.error?.code)
+    addToast({
+      description: getSupabaseErrorMessage(supabaseRes?.error?.code),
+    });
+  if (supabaseRes?.user?.id)
+    return (
+      <div>
+        یک لنیک فعال سازی برای جیمیل شما ارسال شده
+        <Link href="/signin"> وارد شوید</Link>
       </div>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <Image
-                className="w-full"
-                width={200}
-                height={200}
-                src={avatar}
-                alt="avatar-modal"
-              />
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+    );
+  return (
+    <div>
+      <CardHeader className="flex flex-col gap-1 text-center">
+        <h1 className="text-small text-default-500">
+          لطفن فیلد های زیر را پر کنید
+        </h1>
+      </CardHeader>
+
+      <Divider />
+
+      <CardBody>
+        <div className="flex justify-center w-full">
+          <AvatarUploader />
+        </div>
+        <Form action={formAction} className="flex flex-col gap-4">
+          <InputCustom
+            name="username"
+            changeErrorState={changeErrorState}
+            formErrors={formErrors}
+            label="نام کاربری"
+            type="text"
+            placeholder="نام کاربری خود را وارد کنید"
+            isRequired
+          />
+          <InputCustom
+            name="first_name"
+            changeErrorState={changeErrorState}
+            formErrors={formErrors}
+            label="نام"
+            type="text"
+            placeholder="نام خود را وارد کنید"
+            isRequired
+          />
+          <InputCustom
+            name="last_name"
+            changeErrorState={changeErrorState}
+            formErrors={formErrors}
+            label="نام خانوادگی"
+            type="text"
+            placeholder="نام خانوادگی خود را وارد کنید"
+          />
+          <InputCustom
+            name="biography"
+            changeErrorState={changeErrorState}
+            formErrors={formErrors}
+            label="بایو"
+            type="text"
+            placeholder="در چند پاراگراف خود را توضیف کنید"
+          />
+          <InputCustom
+            name="email"
+            changeErrorState={changeErrorState}
+            formErrors={formErrors}
+            defaultValue={state.values.email}
+            label="ایمیل"
+            placeholder="ایمیل خود را وارد کنید"
+          />
+          <InputCustom
+            name="phone"
+            changeErrorState={changeErrorState}
+            formErrors={formErrors}
+            label="شماره همراه"
+            type="tel"
+            placeholder="شماره موبایل خود را وارد کنید"
+          />
+          <Button
+            onPress={() => {}}
+            type="submit"
+            color="primary"
+            className="mt-2 w-full"
+            isLoading={pending}
+            isDisabled={pending}
+          >
+            ایجاد حساب
+          </Button>
+        </Form>
+      </CardBody>
+      <Divider />
     </div>
   );
 };
