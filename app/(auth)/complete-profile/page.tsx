@@ -21,7 +21,8 @@ import InputCustom from "@/components/input-custom";
 
 import { parseDate, type DateValue } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
-import DatePickerCustome from "@/components/date-picker-custome";
+import DatePickerCustom from "@/components/date-picker-custom";
+import SelectCustom from "@/components/select-custom";
 type SupabaseSignUpResponse = {
   user: User | null;
   session: Session | null;
@@ -158,44 +159,8 @@ const CompleteProfile = () => {
             type="tel"
             placeholder="شماره موبایل خود را وارد کنید"
           />
-          {/* <I18nProvider locale="fa-IR-u-ca-persian">
-            <DatePicker
-              isInvalid={!!formErrors?.["birth_date"]}
-              errorMessage={
-                formErrors?.["birth_date"] && (
-                  <ul className="mt-1 text-sm text-danger space-y-1">
-                    {formErrors?.["birth_date"]?.map((msg, i) => (
-                      <li key={i}>• {msg}</li>
-                    ))}
-                  </ul>
-                )
-              }
-              classNames={{
-                base: `
-                  text-right
-                  [&_[data-slot=input-field]]:justify-end
-                  [&_[data-slot=input-field]]:flex
-                  [&_[data-slot=input-field]]:flex-row-reverse
-                  [&_[data-slot=input-field]]:flex-
-                  [&_[data-slot=input-field]]:text-right
-                `,
-              }}
-              name="birth_date"
-              variant="bordered"
-              dir="rtr"
-              labelPlacement="outside"
-              label={"تاریخ تولد"}
-              disableAnimation
-              firstDayOfWeek="sat"
-              showMonthAndYearPickers
-              value={date}
-              onChange={(v) => {
-                changeErrorState("birth_date");
-                setDate(v);
-              }}
-            />{" "}
-          </I18nProvider> */}
-          <DatePickerCustome
+
+          <DatePickerCustom
             formErrors={formErrors}
             changeErrorState={changeErrorState}
             name="birth_date"
@@ -203,6 +168,14 @@ const CompleteProfile = () => {
             labelPlacement="outside"
             label={"تاریخ تولد"}
           />
+          <SelectCustom
+            label={"انتخاب کن"}
+            name="work_status"
+            changeErrorState={changeErrorState}
+            formErrors={formErrors}
+            variant="bordered"
+          />
+
           <Button
             onPress={() => {}}
             type="submit"

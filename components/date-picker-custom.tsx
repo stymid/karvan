@@ -23,7 +23,7 @@ const baseClassNames: DatePickerProps["classNames"] = {
 };
 
 type LabelPlacementType = "inside" | "outside" | "outside-left";
-const DatePickerCustome = <T extends string>({
+const DatePickerCustom = <T extends string>({
   label,
   labelPlacement = "outside",
   name,
@@ -87,4 +87,4 @@ const DatePickerCustome = <T extends string>({
   );
 };
 
-export default DatePickerCustome;
+export default DatePickerCustom;

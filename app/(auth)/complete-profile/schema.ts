@@ -37,7 +37,7 @@ const birthDateSchema = z
       message: "تاریخ تولد نمی‌تواند در آینده باشد",
     },
   );
-const workStatusSchema = z.enum([
+export const workStatusSchema = z.enum([
   "open_to_work",
   "busy",
   "inactive",
