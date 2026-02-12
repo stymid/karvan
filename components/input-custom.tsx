@@ -39,7 +39,7 @@ function InputCustom<T extends string>({
   label: string;
   name: T;
   placeholder: string;
-  defaultValue?: string | undefined;
+  defaultValue?: string;
   onChange?: (event: FormEvent) => void;
   changeErrorState: (name: T) => void;
   formErrors: FormFieldErrors<T>;

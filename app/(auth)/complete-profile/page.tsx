@@ -5,6 +5,7 @@ import React from "react";
 import { CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Divider } from "@heroui/divider";
 import { Button } from "@heroui/button";
+import { DatePicker } from "@heroui/date-picker";
 import { Link } from "@heroui/link";
 import { Form } from "@heroui/form";
 import { useActionState, useEffect, useState } from "react";
@@ -18,6 +19,9 @@ import { addToast } from "@heroui/toast";
 import { getSupabaseErrorMessage } from "@/utils/supabase/error-messages";
 import InputCustom from "@/components/input-custom";
 
+import { parseDate, type DateValue } from "@internationalized/date";
+import { I18nProvider } from "@react-aria/i18n";
+import DatePickerCustome from "@/components/date-picker-custome";
 type SupabaseSignUpResponse = {
   user: User | null;
   session: Session | null;
@@ -63,6 +67,7 @@ const CompleteProfile = () => {
   );
   const [formErrors, setFormErrors] = useState(state?.errors ?? {});
   const [supabaseRes, setSupabaseRes] = useState<SupabaseSignUpResponse>();
+  // const [date, setDate] = useState<DateValue | null>(null);
 
   const changeErrorState = (key: ProfileFieldName) => {
     setFormErrors((prev) => ({
@@ -87,6 +92,7 @@ const CompleteProfile = () => {
         <Link href="/signin"> وارد شوید</Link>
       </div>
     );
+
   return (
     <div>
       <CardHeader className="flex flex-col gap-1 text-center">
@@ -151,6 +157,51 @@ const CompleteProfile = () => {
             label="شماره همراه"
             type="tel"
             placeholder="شماره موبایل خود را وارد کنید"
+          />
+          {/* <I18nProvider locale="fa-IR-u-ca-persian">
+            <DatePicker
+              isInvalid={!!formErrors?.["birth_date"]}
+              errorMessage={
+                formErrors?.["birth_date"] && (
+                  <ul className="mt-1 text-sm text-danger space-y-1">
+                    {formErrors?.["birth_date"]?.map((msg, i) => (
+                      <li key={i}>• {msg}</li>
+                    ))}
+                  </ul>
+                )
+              }
+              classNames={{
+                base: `
+                  text-right
+                  [&_[data-slot=input-field]]:justify-end
+                  [&_[data-slot=input-field]]:flex
+                  [&_[data-slot=input-field]]:flex-row-reverse
+                  [&_[data-slot=input-field]]:flex-
+                  [&_[data-slot=input-field]]:text-right
+                `,
+              }}
+              name="birth_date"
+              variant="bordered"
+              dir="rtr"
+              labelPlacement="outside"
+              label={"تاریخ تولد"}
+              disableAnimation
+              firstDayOfWeek="sat"
+              showMonthAndYearPickers
+              value={date}
+              onChange={(v) => {
+                changeErrorState("birth_date");
+                setDate(v);
+              }}
+            />{" "}
+          </I18nProvider> */}
+          <DatePickerCustome
+            formErrors={formErrors}
+            changeErrorState={changeErrorState}
+            name="birth_date"
+            variant="bordered"
+            labelPlacement="outside"
+            label={"تاریخ تولد"}
           />
           <Button
             onPress={() => {}}
