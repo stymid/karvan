@@ -5,12 +5,8 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function signinUser(
   prevState: SignupFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<SignupFormState> {
-  console.log(
-    "srart--------------------------------signin-----------------------------start"
-  );
-
   const values = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
@@ -29,7 +25,6 @@ export async function signinUser(
       }
 
       errors[field].push(issue.message);
-      console.log(errors);
     });
 
     return {
@@ -37,20 +32,12 @@ export async function signinUser(
       errors,
     };
   }
-  console.log({
-    email: values.email,
-    password: values.password,
-  });
 
   const supabase = await createClient();
   const result1 = await supabase.auth.signInWithPassword({
     email: values.email,
     password: values.password,
   });
-  console.log(result1);
-  console.log(
-    "end-------------------------------signin------------------------------end"
-  );
   return {
     values,
     success: true,

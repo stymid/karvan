@@ -2,72 +2,31 @@
 
 import AvatarUploader from "@/components/avatar-uploader";
 import React from "react";
-import { CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { CardBody, CardHeader } from "@heroui/card";
 import { Divider } from "@heroui/divider";
 import { Button } from "@heroui/button";
-import { DatePicker } from "@heroui/date-picker";
-import { Link } from "@heroui/link";
 import { Form } from "@heroui/form";
 import { useActionState, useEffect, useState } from "react";
 
-import { createUser } from "./acion";
-import { profileSchema } from "./schema";
-import z from "zod";
+import { saveUserProfile } from "./acion";
 
-import { AuthError, User, Session } from "@supabase/supabase-js";
 import { addToast } from "@heroui/toast";
-import { getSupabaseErrorMessage } from "@/utils/supabase/error-messages";
+import { getProfileErrorMessage } from "@/utils/supabase/error-messages";
 import InputCustom from "@/components/input-custom";
-
-import { parseDate, type DateValue } from "@internationalized/date";
-import { I18nProvider } from "@react-aria/i18n";
 import DatePickerCustom from "@/components/date-picker-custom";
 import SelectCustom from "@/components/select-custom";
-type SupabaseSignUpResponse = {
-  user: User | null;
-  session: Session | null;
-  error: AuthError | null;
-};
-export type CompleteProfileFormData = z.infer<typeof profileSchema>;
+import { completeProfileFormInitialState, ProfileFieldName } from "./types";
+import { useRouter } from "next/navigation";
 
-export const completeProfileFormInitialState: CompleteProfileFormState = {
-  values: {
-    email: "",
-    first_name: "",
-    last_name: "",
-    username: "",
-    biography: "",
-    phone: "",
-    birth_date: "",
-    work_status: undefined,
-  },
-};
-
-export type ProfileFieldName =
-  | "username"
-  | "first_name"
-  | "last_name"
-  | "email"
-  | "biography"
-  | "phone"
-  | "birth_date"
-  | "work_status";
-export type FormFieldErrors<T extends string> = Partial<Record<T, string[]>>;
-export type CompleteProfileErrors = FormFieldErrors<ProfileFieldName>;
-
-export type CompleteProfileFormState = {
-  values: Partial<CompleteProfileFormData>;
-  errors?: CompleteProfileErrors;
-  success?: boolean;
-  supabaseResponse?: SupabaseSignUpResponse;
-};
 const CompleteProfile = () => {
+  const router = useRouter();
   const [state, formAction, pending] = useActionState(
-    createUser,
+    saveUserProfile,
     completeProfileFormInitialState,
   );
   const [formErrors, setFormErrors] = useState(state?.errors ?? {});
-  const [supabaseRes, setSupabaseRes] = useState<SupabaseSignUpResponse>();
+  // const [supabaseRes, setSupabaseRes] =
+  //   useState<PostgrestSingleResponse<null>>();
   // const [date, setDate] = useState<DateValue | null>(null);
 
   const changeErrorState = (key: ProfileFieldName) => {
@@ -79,20 +38,23 @@ const CompleteProfile = () => {
 
   useEffect(() => {
     if (state.errors) return setFormErrors(state.errors);
-    setSupabaseRes(state.supabaseResponse);
+    // setSupabaseRes(state.supabaseResponse);
   }, [state]);
-  console.log(supabaseRes);
-  if (supabaseRes?.error?.code)
-    addToast({
-      description: getSupabaseErrorMessage(supabaseRes?.error?.code),
-    });
-  if (supabaseRes?.user?.id)
-    return (
-      <div>
-        یک لنیک فعال سازی برای جیمیل شما ارسال شده
-        <Link href="/signin"> وارد شوید</Link>
-      </div>
-    );
+  useEffect(() => {
+    if (!state.supabaseResponse) return;
+    if (state.supabaseResponse?.status === 204) {
+      addToast({
+        description: `با موفقیت ذخیره شد. \n به کاروان خوش امدید.`,
+        color: "success",
+      });
+      router.push("/");
+    }
+
+    if (state.supabaseResponse?.error?.code)
+      addToast({
+        description: getProfileErrorMessage(state.supabaseResponse.error.code),
+      });
+  }, [state]);
 
   return (
     <div>
@@ -134,6 +96,7 @@ const CompleteProfile = () => {
             label="نام خانوادگی"
             type="text"
             placeholder="نام خانوادگی خود را وارد کنید"
+            isRequired
           />
           <InputCustom
             name="biography"
@@ -150,6 +113,7 @@ const CompleteProfile = () => {
             defaultValue={state.values.email}
             label="ایمیل"
             placeholder="ایمیل خود را وارد کنید"
+            isRequired
           />
           <InputCustom
             name="phone"
@@ -158,6 +122,7 @@ const CompleteProfile = () => {
             label="شماره همراه"
             type="tel"
             placeholder="شماره موبایل خود را وارد کنید"
+            isRequired
           />
 
           <DatePickerCustom
@@ -167,24 +132,26 @@ const CompleteProfile = () => {
             variant="bordered"
             labelPlacement="outside"
             label={"تاریخ تولد"}
+            isRequired
           />
           <SelectCustom
-            label={"انتخاب کن"}
+            label={"وضعیت کاری خود را انتخاب کن."}
             name="work_status"
+            placeholder="وضعیت"
             changeErrorState={changeErrorState}
             formErrors={formErrors}
             variant="bordered"
+            isRequired
           />
 
           <Button
-            onPress={() => {}}
             type="submit"
             color="primary"
             className="mt-2 w-full"
             isLoading={pending}
             isDisabled={pending}
           >
-            ایجاد حساب
+            ذخیره اطلاعات
           </Button>
         </Form>
       </CardBody>

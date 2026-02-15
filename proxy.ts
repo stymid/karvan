@@ -6,7 +6,6 @@ export async function middleware(request: NextRequest) {
 
   // this line do refresh the token
   await supabase.auth.getUser();
-  console.log("dare kar mokone");
 
   return supabaseResponse;
 }

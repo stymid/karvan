@@ -35,10 +35,9 @@ export type SignupFormState = {
 export default function Page() {
   const [state, formAction, pending] = useActionState(
     signinUser,
-    signinInitialState
+    signinInitialState,
   );
   const [formErrors, setFormErrors] = useState(state?.errors ?? {});
-  console.log("cos", state, "component");
 
   const changeErrorState = (key: SigninFieldErrors) => {
     setFormErrors((prev) => ({

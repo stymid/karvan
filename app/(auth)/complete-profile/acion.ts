@@ -1,17 +1,22 @@
 "use server";
 import { profileSchema } from "./schema";
-import { CompleteProfileFormData, CompleteProfileFormState } from "./page";
-import { createClient } from "@/utils/supabase/server";
-import { AuthResponse } from "@supabase/supabase-js";
 
-export async function createUser(
+import { createClient } from "@/utils/supabase/server";
+import { filterFormData } from "@/utils/filter-form-data";
+import {
+  CompleteProfileFormData,
+  CompleteProfileFormState,
+  PROFILE_FIELD_NAMES,
+} from "./types";
+
+export async function saveUserProfile(
   prevState: CompleteProfileFormState,
   formData: FormData,
 ): Promise<CompleteProfileFormState> {
-  const values = Object.fromEntries(
-    formData.entries(),
-  ) as Partial<CompleteProfileFormData>;
-  console.log(values, 17);
+  const values = filterFormData<CompleteProfileFormData>(
+    formData,
+    PROFILE_FIELD_NAMES,
+  );
 
   const parsedResult = profileSchema.safeParse(values);
 
@@ -20,8 +25,6 @@ export async function createUser(
 
     parsedResult.error.issues.forEach((issue) => {
       const field = issue.path[0] as string;
-      console.log(field);
-      console.log(issue.message);
 
       if (!errors[field]) {
         errors[field] = [];
@@ -29,7 +32,6 @@ export async function createUser(
 
       errors[field].push(issue.message);
     });
-    console.log({ cos: errors }, 32);
 
     return {
       values,
@@ -37,24 +39,22 @@ export async function createUser(
     };
   }
 
-  let supabaseResult: AuthResponse;
   const supabase = await createClient();
-  // supabaseResult = await supabase.auth.signUp({
-  //   email: values.email,
-  //   password: values.password,
-  //   options: {
-  //     emailRedirectTo: "http://localhost:3000/verify-email/callback",
-  //   },
-  // });
 
-  // const {
-  //   data: { session, user },
-  //   error,
-  // } = supabaseResult;
+  const { data } = await supabase.auth.getUser();
+  const user = data.user;
+  if (!user?.id) {
+    return {
+      values,
+    };
+  }
+  const supabaseResult = await supabase
+    .from("profiles")
+    .update(values)
+    .eq("id", user.id);
 
   return {
     values,
-    success: true,
-    // supabaseResponse: { error, session, user },
+    supabaseResponse: supabaseResult,
   };
 }

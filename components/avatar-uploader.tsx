@@ -122,7 +122,7 @@ const AvatarUploader = () => {
       <div className="flex flex-col gap-3">
         <button
           disabled={isDeleting || isUploading}
-          className="relative max-w-min hover:cursor-pointer"
+          className="group relative max-w-min hover:cursor-pointer"
           type="button"
           onClick={(e) => {
             inputRef.current?.click();
@@ -146,7 +146,7 @@ const AvatarUploader = () => {
               color="default"
             />
           ) : publicAvatarURL ? (
-            <GalleryEditIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 stroke-white" />
+            <GalleryEditIcon className="hidden group-hover:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 stroke-white text-white" />
           ) : (
             <CameraAddIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 stroke-white" />
           )}

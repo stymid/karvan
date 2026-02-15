@@ -1,4 +1,4 @@
-export type ErrorCode =
+export type AuthErrorCode =
   | "unexpected_failure"
   | "validation_failed"
   | "bad_json"
@@ -85,9 +85,9 @@ export type ErrorCode =
   | "email_address_invalid";
 
 type ErrorMessageMap = {
-  [K in ErrorCode]?: string;
+  [K in AuthErrorCode]?: string;
 };
-export const SUPABASE_ERROR_MESSAGES: ErrorMessageMap = {
+export const SUPABASE_AUTH_ERROR_MESSAGES: ErrorMessageMap = {
   invalid_credentials: "ایمیل یا رمز عبور اشتباه است",
   email_exists: "این ایمیل قبلاً ثبت‌نام شده است",
   user_already_exists: "کاربری با این مشخصات وجود دارد",
@@ -125,13 +125,45 @@ export const SUPABASE_ERROR_MESSAGES: ErrorMessageMap = {
   flow_state_not_found:
     "  نشست تأیید ایمیل منقضی شده است. لطفاً دوباره وارد شوید یا لینک جدید دریافت کنید. ",
 };
-export function getSupabaseErrorMessage(errorCode?: string | null): string {
+export function getSupabaseAuthErrorMessage(errorCode?: string | null): string {
   if (!errorCode) {
     return "خطای نامشخصی رخ داده است";
   }
 
   return (
-    SUPABASE_ERROR_MESSAGES[errorCode as ErrorCode] ??
+    SUPABASE_AUTH_ERROR_MESSAGES[errorCode as AuthErrorCode] ??
+    "خطای نامشخصی رخ داده است"
+  );
+}
+
+export type ProfileErrorCode =
+  | "validation_failed"
+  | "not_authorized"
+  | "user_not_found"
+  | "email_exists"
+  | "phone_exists"
+  | "conflict"
+  | "request_timeout"
+  | "unexpected_failure";
+export const PROFILE_ERROR_MESSAGES: Record<ProfileErrorCode, string> = {
+  validation_failed: "اطلاعات وارد شده معتبر نیست",
+  not_authorized: "دسترسی غیرمجاز",
+  user_not_found: "کاربر یافت نشد",
+
+  email_exists: "این ایمیل قبلاً استفاده شده است",
+  phone_exists: "این شماره قبلاً ثبت شده است",
+  conflict: "اطلاعات تکراری است",
+
+  request_timeout: "ارتباط با سرور برقرار نشد",
+  unexpected_failure: "خطای غیرمنتظره‌ای رخ داده است",
+};
+export function getProfileErrorMessage(errorCode?: string | null): string {
+  if (!errorCode) {
+    return "خطای نامشخصی رخ داده است";
+  }
+
+  return (
+    PROFILE_ERROR_MESSAGES[errorCode as ProfileErrorCode] ??
     "خطای نامشخصی رخ داده است"
   );
 }

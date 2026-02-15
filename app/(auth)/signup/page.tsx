@@ -16,7 +16,7 @@ import EmailInputCustom from "@/components/email-input-custom";
 
 import { AuthError, User, Session } from "@supabase/supabase-js";
 import { addToast } from "@heroui/toast";
-import { getSupabaseErrorMessage } from "@/utils/supabase/error-messages";
+import { getSupabaseAuthErrorMessage } from "@/utils/supabase/error-messages";
 
 type SupabaseSignUpResponse = {
   user: User | null;
@@ -62,10 +62,10 @@ export default function Page() {
     if (state.errors) return setFormErrors(state.errors);
     setSupabaseRes(state.supabaseResponse);
   }, [state]);
-  console.log(supabaseRes, 80);
+
   if (supabaseRes?.error?.code)
     addToast({
-      description: getSupabaseErrorMessage(supabaseRes?.error?.code),
+      description: getSupabaseAuthErrorMessage(supabaseRes?.error?.code),
     });
   if (supabaseRes?.user?.id)
     return (

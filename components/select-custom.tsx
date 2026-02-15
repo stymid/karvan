@@ -41,6 +41,7 @@ export default function SelectCustom<T extends string>({
   className,
   variant,
   classNames,
+  placeholder,
 }: {
   label?: string | number;
   labelPlacement?: LabelPlacementType;
@@ -53,6 +54,7 @@ export default function SelectCustom<T extends string>({
   className?: string;
   variant: SelectProps["variant"];
   classNames?: SelectProps["classNames"];
+  placeholder?: string;
 }) {
   const [select, setSelect] = useState<Selection>();
 
@@ -79,6 +81,7 @@ export default function SelectCustom<T extends string>({
       dir="rtr"
       isRequired={isRequired}
       disableAnimation
+      placeholder={placeholder}
       onSelectionChange={(keys) => {
         changeErrorState(name);
         setSelect(keys);

@@ -56,7 +56,7 @@ export const profileSchema = z.object({
   last_name: nameBase,
   username: usernameSchema,
   biography: biographySchema.optional(),
-  phone: phoneSchema.optional(),
-  birth_date: birthDateSchema.optional(),
-  work_status: workStatusSchema.optional(),
+  phone: phoneSchema,
+  birth_date: birthDateSchema,
+  work_status: workStatusSchema,
 });
