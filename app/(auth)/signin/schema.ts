@@ -1,15 +1,8 @@
 import { passwordErrors } from "@/constants/form-messages";
 import * as z from "zod";
 
-const {
-  minLength,
-  maxLength,
-  uppercase,
-  lowercase,
-  number,
-  special,
-  mismatch,
-} = passwordErrors;
+const { minLength, maxLength, uppercase, lowercase, number, special } =
+  passwordErrors;
 
 const passwordSchema = z
   .string()

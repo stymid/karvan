@@ -135,7 +135,7 @@ export function getSupabaseAuthErrorMessage(errorCode?: string | null): string {
     "خطای نامشخصی رخ داده است"
   );
 }
-
+// ==================completeprofile route errors
 export type ProfileErrorCode =
   | "validation_failed"
   | "not_authorized"
@@ -164,6 +164,37 @@ export function getProfileErrorMessage(errorCode?: string | null): string {
 
   return (
     PROFILE_ERROR_MESSAGES[errorCode as ProfileErrorCode] ??
+    "خطای نامشخصی رخ داده است"
+  );
+}
+
+// ================== signin route errors
+// signin.errors.ts
+export type SigninErrorCode =
+  | "invalid_credentials"
+  | "email_not_confirmed"
+  | "too_many_requests"
+  | "request_timeout"
+  | "unexpected_failure";
+export const SIGNIN_ERROR_MESSAGES: Record<SigninErrorCode, string> = {
+  invalid_credentials: "ایمیل یا رمز عبور اشتباه است",
+
+  email_not_confirmed: "ایمیل شما هنوز تأیید نشده است",
+
+  too_many_requests:
+    "تعداد تلاش‌ها بیش از حد مجاز است، لطفاً بعداً امتحان کنید",
+
+  request_timeout: "ارتباط با سرور برقرار نشد",
+
+  unexpected_failure: "خطای غیرمنتظره‌ای رخ داده است",
+};
+export function getSigninErrorMessage(errorCode?: string | null): string {
+  if (!errorCode) {
+    return "خطای نامشخصی رخ داده است";
+  }
+
+  return (
+    SIGNIN_ERROR_MESSAGES[errorCode as SigninErrorCode] ??
     "خطای نامشخصی رخ داده است"
   );
 }

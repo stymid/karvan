@@ -1,12 +1,13 @@
 "use server";
 import { signinSchema } from "./schema";
-import { SignupFormState } from "./page";
+
 import { createClient } from "@/utils/supabase/server";
+import { SigninFormState } from "./types";
 
 export async function signinUser(
-  prevState: SignupFormState,
+  prevState: SigninFormState,
   formData: FormData,
-): Promise<SignupFormState> {
+): Promise<SigninFormState> {
   const values = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
@@ -34,12 +35,12 @@ export async function signinUser(
   }
 
   const supabase = await createClient();
-  const result1 = await supabase.auth.signInWithPassword({
+  const supabaseResponse = await supabase.auth.signInWithPassword({
     email: values.email,
     password: values.password,
   });
   return {
     values,
-    success: true,
+    supabaseResponse,
   };
 }

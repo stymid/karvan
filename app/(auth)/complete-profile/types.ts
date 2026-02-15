@@ -7,11 +7,6 @@ import {
 import { profileSchema } from "./schema";
 import z from "zod";
 
-type SupabaseSignUpResponse = {
-  user: User | null;
-  session: Session | null;
-  error: AuthError | null;
-};
 export type CompleteProfileFormData = z.infer<typeof profileSchema>;
 
 export const completeProfileFormInitialState: CompleteProfileFormState = {

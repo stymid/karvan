@@ -13,33 +13,31 @@ import { signinUser } from "./acion";
 import { signinSchema } from "./schema";
 import z from "zod";
 import EmailInputCustom from "@/components/email-input-custom";
+import { SigninErrors, SigninFieldName, SigninFormState } from "./types";
+import { addToast } from "@heroui/toast";
+import { User } from "@supabase/supabase-js";
+
+import { getSigninErrorMessage } from "@/utils/supabase/error-messages";
+import { useRouter } from "next/navigation";
 
 export type SigninFormData = z.infer<typeof signinSchema>;
 
-export const signinInitialState: SignupFormState = {
+export const signinInitialState: SigninFormState = {
   values: {
     email: "",
     password: "",
   },
 };
 
-export type SigninFieldErrors = "email" | "password" | "confirmpassword";
-export type FormFieldErrors<T extends string> = Partial<Record<T, string[]>>;
-export type SigninErrors = FormFieldErrors<SigninFieldErrors>;
-
-export type SignupFormState = {
-  values: Partial<SigninFormData>;
-  errors?: SigninErrors;
-  success?: boolean;
-};
 export default function Page() {
+  const router = useRouter();
   const [state, formAction, pending] = useActionState(
     signinUser,
     signinInitialState,
   );
   const [formErrors, setFormErrors] = useState(state?.errors ?? {});
 
-  const changeErrorState = (key: SigninFieldErrors) => {
+  const changeErrorState = (key: SigninFieldName) => {
     setFormErrors((prev) => ({
       ...prev,
       [key]: undefined,
@@ -49,6 +47,25 @@ export default function Page() {
   useEffect(() => {
     if (state.errors) setFormErrors(state.errors);
   }, [state]);
+
+  useEffect(() => {
+    if (!state.supabaseResponse) return;
+
+    if (state.supabaseResponse.data.user) {
+      addToast({
+        description: `با موفقیت وارد شدید.`,
+        color: "success",
+      });
+      router.push("/");
+    }
+
+    if (state.supabaseResponse?.error?.code)
+      addToast({
+        description: getSigninErrorMessage(state.supabaseResponse.error.code),
+        color: "danger",
+      });
+  }, [state]);
+
   return (
     <>
       <CardHeader className="flex flex-col gap-1 text-center">
@@ -89,9 +106,9 @@ export default function Page() {
       </CardBody>
       <Divider />
       <CardFooter>
-        قبلن ثبت نام کرده اید؟{" "}
-        <Link color="secondary" href="/signin">
-          وارد شوید
+        تا به حال ثبت نام نکرده اید؟{" "}
+        <Link color="secondary" href="/signup">
+          ثبت نام کنید
         </Link>
       </CardFooter>
     </>
