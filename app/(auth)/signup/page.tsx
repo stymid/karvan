@@ -39,12 +39,6 @@ export default function Page() {
     }));
   };
   useEffect(() => {
-    const siteUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : "http://localhost:3000";
-    addToast({ description: siteUrl });
-  }, []);
-  useEffect(() => {
     if (state.errors) return setFormErrors(state.errors);
     setSupabaseRes(state.supabaseResponse);
   }, [state]);
