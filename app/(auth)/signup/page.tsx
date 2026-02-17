@@ -48,7 +48,7 @@ export default function Page() {
     addToast({
       description: getSupabaseAuthErrorMessage(supabaseRes?.error?.code),
     });
-  if (supabaseRes?.error?.name === "AuthApiError")
+  else if (supabaseRes?.error?.name)
     addToast({
       description: supabaseRes.error.message,
     });
