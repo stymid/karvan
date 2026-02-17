@@ -4,7 +4,7 @@ import z from "zod";
 
 export type SigninFormData = z.infer<typeof signinSchema>;
 
-export const completeProfileFormInitialState: SigninFormState = {
+export const signinInitialState: SigninFormState = {
   values: {
     email: "",
     password: "",

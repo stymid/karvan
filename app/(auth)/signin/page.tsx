@@ -13,21 +13,17 @@ import { signinUser } from "./acion";
 import { signinSchema } from "./schema";
 import z from "zod";
 import EmailInputCustom from "@/components/email-input-custom";
-import { SigninErrors, SigninFieldName, SigninFormState } from "./types";
+import {
+  SigninErrors,
+  SigninFieldName,
+  SigninFormState,
+  signinInitialState,
+} from "./types";
 import { addToast } from "@heroui/toast";
 import { User } from "@supabase/supabase-js";
 
 import { getSigninErrorMessage } from "@/utils/supabase/error-messages";
 import { useRouter } from "next/navigation";
-
-export type SigninFormData = z.infer<typeof signinSchema>;
-
-export const signinInitialState: SigninFormState = {
-  values: {
-    email: "",
-    password: "",
-  },
-};
 
 export default function Page() {
   const router = useRouter();
