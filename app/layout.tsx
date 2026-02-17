@@ -6,6 +6,7 @@ import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
 import { iranYecanX } from "@/config/fonts";
+import Clienturltest from "./(main)/clienturltest";
 
 export const metadata: Metadata = {
   title: {
@@ -30,6 +31,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const siteUrl =
+    process.env.VERCEL_ENV === "production"
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL}`
+      : process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000";
+
   return (
     <html suppressHydrationWarning lang="fa" dir="rtl">
       <head />
@@ -39,6 +47,7 @@ export default function RootLayout({
           iranYecanX.className,
         )}
       >
+        <Clienturltest url={siteUrl} />
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           {children}
         </Providers>

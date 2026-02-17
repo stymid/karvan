@@ -48,10 +48,15 @@ export default function Page() {
     if (state.errors) return setFormErrors(state.errors);
     setSupabaseRes(state.supabaseResponse);
   }, [state]);
+  console.log(state);
 
   if (supabaseRes?.error?.code)
     addToast({
       description: getSupabaseAuthErrorMessage(supabaseRes?.error?.code),
+    });
+  if (supabaseRes?.error?.name === "AuthApiError")
+    addToast({
+      description: supabaseRes.error.message,
     });
   if (supabaseRes?.user?.id)
     return (
