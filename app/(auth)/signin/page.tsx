@@ -54,6 +54,7 @@ export default function Page() {
         color: "danger",
       });
   }, [state]);
+  console.log(state);
 
   return (
     <>

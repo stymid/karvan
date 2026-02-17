@@ -59,6 +59,11 @@ export default function Page() {
         <Link href="/signin"> وارد شوید</Link>
       </div>
     );
+  if (supabaseRes?.data.session?.user.aud === "authenticated")
+    <div>
+      شما قبلن ثبت نام کرده اید و با موفقیت تایید شده اید.
+      <Link href="/signin"> وارد شوید</Link>
+    </div>;
   return (
     <>
       <CardHeader className="flex flex-col gap-1 text-center">
