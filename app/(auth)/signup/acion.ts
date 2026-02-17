@@ -5,6 +5,10 @@ import { createClient } from "@/utils/supabase/server";
 import { AuthResponse } from "@supabase/supabase-js";
 import { SignupFormState } from "./types";
 
+const siteUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "http://localhost:3000";
+
 export async function createUser(
   prevState: SignupFormState,
   formData: FormData,
@@ -42,7 +46,7 @@ export async function createUser(
     email: values.email,
     password: values.password,
     options: {
-      emailRedirectTo: "http://localhost:3000/verify-email/callback",
+      emailRedirectTo: `${siteUrl}`,
     },
   });
 
