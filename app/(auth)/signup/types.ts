@@ -1,12 +1,7 @@
-import { AuthError, Session, User } from "@supabase/supabase-js";
+import { AuthError, AuthResponse, Session, User } from "@supabase/supabase-js";
 import { signupSchema } from "./schema";
 import z from "zod";
 
-export type SupabaseSignUpResponse = {
-  user: User | null;
-  session: Session | null;
-  error: AuthError | null;
-};
 export type SignupFormData = z.infer<typeof signupSchema>;
 
 export const signupInitialState: SignupFormState = {
@@ -31,5 +26,5 @@ export type SignupFormState = {
   values: Partial<SignupFormData>;
   errors?: SignupErrors;
   success?: boolean;
-  supabaseResponse?: SupabaseSignUpResponse;
+  supabaseResponse?: AuthResponse;
 };

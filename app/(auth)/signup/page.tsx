@@ -19,8 +19,8 @@ import {
   SignupFieldErrors,
   SignupFormState,
   signupInitialState,
-  SupabaseSignUpResponse,
 } from "./types";
+import { AuthResponse } from "@supabase/supabase-js";
 
 export default function Page() {
   const [state, formAction, pending] = useActionState(
@@ -30,7 +30,7 @@ export default function Page() {
   const [formErrors, setFormErrors] = useState<SignupErrors>(
     state?.errors ?? {},
   );
-  const [supabaseRes, setSupabaseRes] = useState<SupabaseSignUpResponse>();
+  const [supabaseRes, setSupabaseRes] = useState<AuthResponse>();
 
   const changeErrorState = (key: SignupFieldErrors) => {
     setFormErrors((prev) => ({
@@ -52,7 +52,7 @@ export default function Page() {
     addToast({
       description: supabaseRes.error.message,
     });
-  if (supabaseRes?.user?.id)
+  if (supabaseRes?.data.user?.id)
     return (
       <div>
         یک لنیک فعال سازی برای جیمیل شما ارسال شده

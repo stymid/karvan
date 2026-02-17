@@ -52,14 +52,10 @@ export async function createUser(
     },
   });
 
-  const {
-    data: { session, user },
-    error,
-  } = supabaseResult;
-
   return {
+    errors: {},
     values,
     success: true,
-    supabaseResponse: { error, session, user },
+    supabaseResponse: supabaseResult,
   };
 }
