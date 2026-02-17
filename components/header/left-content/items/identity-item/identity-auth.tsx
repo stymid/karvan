@@ -13,8 +13,12 @@ import {
 import { NavbarItem } from "@heroui/navbar";
 import { PlusIcon } from "@/components/icons/plus-icon";
 import Avatar from "@/components/header/avatar";
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function IdentityAuth() {
+  const router = useRouter();
+
   return (
     <NavbarItem className="flex gap-2 items-center">
       <Dropdown
@@ -107,7 +111,20 @@ export default function IdentityAuth() {
 
           <DropdownSection aria-label="Help & Feedback">
             <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
-            <DropdownItem key="logout">Log Out</DropdownItem>
+
+            <DropdownItem key="logout">
+              <button
+                onClick={async () => {
+                  const supabase = createClient();
+
+                  await supabase.auth.signOut();
+                  router.refresh();
+                }}
+                className="rounded bg-red-600 px-4 py-2 text-white"
+              >
+                Log Out
+              </button>
+            </DropdownItem>
           </DropdownSection>
         </DropdownMenu>
       </Dropdown>

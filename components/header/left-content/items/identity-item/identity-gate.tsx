@@ -7,7 +7,7 @@ const IdentityGate = async () => {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  return session ? <IdentityAuth /> : <IdentityGuest />;
+  return session?.user.id ? <IdentityAuth /> : <IdentityGuest />;
 };
 
 export default IdentityGate;
