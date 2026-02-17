@@ -46,7 +46,7 @@ export async function createUser(
     email: values.email,
     password: values.password,
     options: {
-      emailRedirectTo: `${siteUrl}`,
+      emailRedirectTo: `${siteUrl}/verify-email/callback`,
     },
   });
 
