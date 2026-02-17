@@ -1,7 +1,5 @@
 import { Select, SelectItem } from "@heroui/select";
 
-import { FormFieldErrors } from "@/app/(auth)/signup/page";
-
 import type { SelectProps, SelectItemProps } from "@heroui/select";
 import type { Selection, Key } from "@react-types/shared";
 
@@ -10,6 +8,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { mergeClassNames } from "@/utils/merge-classnames";
 import { WorkStatus } from "@/types";
 import { workStatusSchema } from "@/app/(auth)/complete-profile/schema";
+import { FormFieldErrors } from "@/app/(auth)/signup/types";
 
 const baseClassNames: SelectProps["classNames"] = {
   base: `

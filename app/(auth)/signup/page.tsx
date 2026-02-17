@@ -10,45 +10,26 @@ import { Form } from "@heroui/form";
 import { useActionState, useEffect, useState } from "react";
 import PasswordInputCustom from "@/components/password-input-custom";
 import { createUser } from "./acion";
-import { signupSchema } from "./schema";
-import z from "zod";
-import EmailInputCustom from "@/components/email-input-custom";
 
-import { AuthError, User, Session } from "@supabase/supabase-js";
+import EmailInputCustom from "@/components/email-input-custom";
 import { addToast } from "@heroui/toast";
 import { getSupabaseAuthErrorMessage } from "@/utils/supabase/error-messages";
+import {
+  SignupErrors,
+  SignupFieldErrors,
+  SignupFormState,
+  signupInitialState,
+  SupabaseSignUpResponse,
+} from "./types";
 
-type SupabaseSignUpResponse = {
-  user: User | null;
-  session: Session | null;
-  error: AuthError | null;
-};
-export type SignupFormData = z.infer<typeof signupSchema>;
-
-export const signupInitialState: SignupFormState = {
-  values: {
-    email: "",
-    password: "",
-    confirmpassword: "",
-  },
-};
-
-export type SignupFieldErrors = "email" | "password" | "confirmpassword";
-export type FormFieldErrors<T extends string> = Partial<Record<T, string[]>>;
-export type SignupErrors = FormFieldErrors<SignupFieldErrors>;
-
-export type SignupFormState = {
-  values: Partial<SignupFormData>;
-  errors?: SignupErrors;
-  success?: boolean;
-  supabaseResponse?: SupabaseSignUpResponse;
-};
 export default function Page() {
   const [state, formAction, pending] = useActionState(
     createUser,
     signupInitialState,
   );
-  const [formErrors, setFormErrors] = useState(state?.errors ?? {});
+  const [formErrors, setFormErrors] = useState<SignupErrors>(
+    state?.errors ?? {},
+  );
   const [supabaseRes, setSupabaseRes] = useState<SupabaseSignUpResponse>();
 
   const changeErrorState = (key: SignupFieldErrors) => {

@@ -1,5 +1,5 @@
 // This componnet desigined for now only for text, email and password type
-import { FormFieldErrors } from "@/app/(auth)/signup/page";
+
 import { mergeClassNames } from "@/utils/merge-classnames";
 import { Input } from "@heroui/input";
 import type { InputProps } from "@heroui/input";
@@ -7,6 +7,7 @@ import type { InputProps } from "@heroui/input";
 import { FormEvent, useEffect, useState } from "react";
 import { EyeIcon } from "./icons/eye-icon";
 import { EyeClosedIcon } from "./icons/eye-closed-icon";
+import { FormFieldErrors } from "@/app/(auth)/signup/types";
 
 type InputTypes =
   | "text"

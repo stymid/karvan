@@ -1,6 +1,5 @@
 "use client";
 // This componnet desigined for pick a date
-import { FormFieldErrors } from "@/app/(auth)/signup/page";
 
 import type { DatePickerProps } from "@heroui/date-picker";
 
@@ -10,6 +9,7 @@ import type { CalendarDate } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
 import { DatePicker } from "@heroui/date-picker";
 import { mergeClassNames } from "@/utils/merge-classnames";
+import { FormFieldErrors } from "@/app/(auth)/complete-profile/types";
 
 const baseClassNames: DatePickerProps["classNames"] = {
   base: `

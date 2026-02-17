@@ -1,4 +1,4 @@
-import { FormFieldErrors } from "@/app/(auth)/signup/page";
+import { FormFieldErrors } from "@/app/(auth)/signin/types";
 import { Input } from "@heroui/input";
 import { FormEvent, useEffect, useState } from "react";
 

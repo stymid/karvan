@@ -2,7 +2,7 @@ import { Input } from "@heroui/input";
 import React, { FormEvent, useEffect, useState } from "react";
 import { EyeIcon } from "./icons/eye-icon";
 import { EyeClosedIcon } from "./icons/eye-closed-icon";
-import { FormFieldErrors } from "@/app/(auth)/signup/page";
+import { FormFieldErrors } from "@/app/(auth)/signup/types";
 
 function PasswordInputCustom<T extends string>({
   label,

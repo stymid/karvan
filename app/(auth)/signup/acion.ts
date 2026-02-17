@@ -1,8 +1,9 @@
 "use server";
 import { signupSchema } from "./schema";
-import { SignupFormState } from "./page";
+
 import { createClient } from "@/utils/supabase/server";
 import { AuthResponse } from "@supabase/supabase-js";
+import { SignupFormState } from "./types";
 
 export async function createUser(
   prevState: SignupFormState,
