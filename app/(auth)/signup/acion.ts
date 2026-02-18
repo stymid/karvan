@@ -9,12 +9,12 @@ export async function createUser(
   prevState: SignupFormState,
   formData: FormData,
 ): Promise<SignupFormState> {
-  const siteUrl =
-    process.env.VERCEL_ENV === "production"
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL}`
-      : process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000";
+  // const siteUrl =
+  //   process.env.VERCEL_ENV === "production"
+  //     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL}`
+  //     : process.env.VERCEL_URL
+  //       ? `https://${process.env.VERCEL_URL}`
+  //       : "http://localhost:3000";
   const values = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
@@ -42,14 +42,13 @@ export async function createUser(
     };
   }
 
-  let supabaseResult: AuthResponse;
   const supabase = await createClient();
-  supabaseResult = await supabase.auth.signUp({
+  const supabaseResult = await supabase.auth.signUp({
     email: values.email,
     password: values.password,
-    options: {
-      emailRedirectTo: `${siteUrl}/verify-email/callback`,
-    },
+    // options: {
+    //   emailRedirectTo: `${siteUrl}/verify-email/callback`,
+    // },
   });
 
   return {
