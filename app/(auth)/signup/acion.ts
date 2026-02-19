@@ -54,6 +54,6 @@ export async function createUser(
   return {
     errors: {},
     values,
-    supabaseResponse: supabaseResult,
+    supabaseResponse: JSON.stringify(supabaseResult),
   };
 }

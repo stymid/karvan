@@ -21,6 +21,7 @@ import {
   signupInitialState,
 } from "./types";
 import { AuthResponse } from "@supabase/supabase-js";
+import { json } from "zod";
 
 export default function Page() {
   const [state, formAction, pending] = useActionState(
@@ -40,7 +41,8 @@ export default function Page() {
   };
   useEffect(() => {
     if (state.errors) return setFormErrors(state.errors);
-    setSupabaseRes(state.supabaseResponse);
+    const supabaseResponse = state.supabaseResponse;
+    setSupabaseRes(supabaseResponse ? JSON.parse(supabaseResponse) : false);
   }, [state]);
   console.log(state);
 
