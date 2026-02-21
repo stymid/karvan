@@ -14,14 +14,8 @@ import { createUser } from "./acion";
 import EmailInputCustom from "@/components/email-input-custom";
 import { addToast } from "@heroui/toast";
 import { getSupabaseAuthErrorMessage } from "@/utils/supabase/error-messages";
-import {
-  SignupErrors,
-  SignupFieldErrors,
-  SignupFormState,
-  signupInitialState,
-} from "./types";
+import { SignupErrors, SignupFieldErrors, signupInitialState } from "./types";
 import { AuthResponse } from "@supabase/supabase-js";
-import { json } from "zod";
 
 export default function Page() {
   const [state, formAction, pending] = useActionState(
@@ -31,7 +25,7 @@ export default function Page() {
   const [formErrors, setFormErrors] = useState<SignupErrors>(
     state?.errors ?? {},
   );
-  // const [supabaseRes, setSupabaseRes] = useState<AuthResponse>();
+
   const lastToastedAttemptId = useRef<number>(0);
 
   const changeErrorState = (key: SignupFieldErrors) => {
@@ -40,17 +34,7 @@ export default function Page() {
       [key]: undefined,
     }));
   };
-  // useEffect(() => {
-  //   console.log(state, 43);
-  //   console.log(state.errors ?? false);
 
-  //   if (typeof state.errors !== "undefined") setFormErrors(state.errors);
-
-  //   const supabaseResponse = state.supabaseResponse;
-  //   console.log(supabaseResponse ? JSON.parse(supabaseResponse) : false, 47);
-
-  //   setSupabaseRes(supabaseResponse ? JSON.parse(supabaseResponse) : undefined);
-  // }, [state.supabaseResponse, state.attemptId]);
   const supabaseRes = useMemo<AuthResponse | undefined>(() => {
     if (!state.supabaseResponse) return undefined;
     try {
@@ -74,14 +58,6 @@ export default function Page() {
         ? getSupabaseAuthErrorMessage(err.code)
         : (err.message ?? "خطای نامشخص"),
     });
-    // if (supabaseRes?.error?.code)
-    //   addToast({
-    //     description: getSupabaseAuthErrorMessage(supabaseRes?.error?.code),
-    //   });
-    // else if (supabaseRes?.error?.message)
-    //   addToast({
-    //     description: supabaseRes.error.message,
-    //   });
   }, [supabaseRes, state.attemptId]);
   if (supabaseRes?.data.user?.id)
     return (

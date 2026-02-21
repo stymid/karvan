@@ -1,4 +1,3 @@
-import { AuthError, AuthResponse, Session, User } from "@supabase/supabase-js";
 import { signupSchema } from "./schema";
 import z from "zod";
 
