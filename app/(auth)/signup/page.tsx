@@ -7,7 +7,7 @@ import { Divider } from "@heroui/divider";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { Form } from "@heroui/form";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import PasswordInputCustom from "@/components/password-input-custom";
 import { createUser } from "./acion";
 
@@ -31,7 +31,8 @@ export default function Page() {
   const [formErrors, setFormErrors] = useState<SignupErrors>(
     state?.errors ?? {},
   );
-  const [supabaseRes, setSupabaseRes] = useState<AuthResponse>();
+  // const [supabaseRes, setSupabaseRes] = useState<AuthResponse>();
+  const lastToastedAttemptId = useRef<number>(0);
 
   const changeErrorState = (key: SignupFieldErrors) => {
     setFormErrors((prev) => ({
@@ -39,21 +40,49 @@ export default function Page() {
       [key]: undefined,
     }));
   };
-  useEffect(() => {
-    if (state.errors) return setFormErrors(state.errors);
-    const supabaseResponse = state.supabaseResponse;
-    setSupabaseRes(supabaseResponse ? JSON.parse(supabaseResponse) : false);
-  }, [state]);
-  console.log(state);
+  // useEffect(() => {
+  //   console.log(state, 43);
+  //   console.log(state.errors ?? false);
 
-  if (supabaseRes?.error?.code)
+  //   if (typeof state.errors !== "undefined") setFormErrors(state.errors);
+
+  //   const supabaseResponse = state.supabaseResponse;
+  //   console.log(supabaseResponse ? JSON.parse(supabaseResponse) : false, 47);
+
+  //   setSupabaseRes(supabaseResponse ? JSON.parse(supabaseResponse) : undefined);
+  // }, [state.supabaseResponse, state.attemptId]);
+  const supabaseRes = useMemo<AuthResponse | undefined>(() => {
+    if (!state.supabaseResponse) return undefined;
+    try {
+      return JSON.parse(state.supabaseResponse);
+    } catch {
+      return undefined;
+    }
+  }, [state.supabaseResponse]);
+  useEffect(() => {
+    console.log(state, 51);
+    console.log(supabaseRes, 52);
+
+    if (!supabaseRes?.error) return;
+    if (lastToastedAttemptId.current === state.attemptId) return;
+
+    lastToastedAttemptId.current = state.attemptId;
+
+    const err = supabaseRes.error;
     addToast({
-      description: getSupabaseAuthErrorMessage(supabaseRes?.error?.code),
+      description: err.code
+        ? getSupabaseAuthErrorMessage(err.code)
+        : (err.message ?? "خطای نامشخص"),
     });
-  else if (supabaseRes?.error?.message)
-    addToast({
-      description: supabaseRes.error.message,
-    });
+    // if (supabaseRes?.error?.code)
+    //   addToast({
+    //     description: getSupabaseAuthErrorMessage(supabaseRes?.error?.code),
+    //   });
+    // else if (supabaseRes?.error?.message)
+    //   addToast({
+    //     description: supabaseRes.error.message,
+    //   });
+  }, [supabaseRes, state.attemptId]);
   if (supabaseRes?.data.user?.id)
     return (
       <div>
@@ -62,10 +91,12 @@ export default function Page() {
       </div>
     );
   if (supabaseRes?.data.session?.user.aud === "authenticated")
-    <div>
-      شما قبلن ثبت نام کرده اید و با موفقیت تایید شده اید.
-      <Link href="/signin"> وارد شوید</Link>
-    </div>;
+    return (
+      <div>
+        شما قبلن ثبت نام کرده اید و با موفقیت تایید شده اید.
+        <Link href="/signin"> وارد شوید</Link>
+      </div>
+    );
   return (
     <>
       <CardHeader className="flex flex-col gap-1 text-center">

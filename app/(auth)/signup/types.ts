@@ -10,6 +10,7 @@ export const signupInitialState: SignupFormState = {
     password: "",
     confirmpassword: "",
   },
+  attemptId: 0,
 };
 export const SIGNUP_FIELD_NAMES = [
   "email",
@@ -25,6 +26,6 @@ export type SignupErrors = FormFieldErrors<SignupFieldName>;
 export type SignupFormState = {
   values: Partial<SignupFormData>;
   errors?: SignupErrors;
-
+  attemptId: number;
   supabaseResponse?: string;
 };
