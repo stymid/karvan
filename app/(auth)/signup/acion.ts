@@ -37,14 +37,14 @@ export async function createUser(
     });
 
     return {
-      attemptId: prevState.attemptId + 1,
       values,
       errors,
     };
   }
 
+  let supabaseResult: AuthResponse;
   const supabase = await createClient();
-  const supabaseResult = await supabase.auth.signUp({
+  supabaseResult = await supabase.auth.signUp({
     email: values.email,
     password: values.password,
     options: {
@@ -53,9 +53,9 @@ export async function createUser(
   });
 
   return {
-    attemptId: prevState.attemptId + 1,
     errors: {},
     values,
-    supabaseResponse: JSON.stringify(supabaseResult),
+    success: true,
+    authResultJSON: supabaseResult,
   };
 }
