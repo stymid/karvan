@@ -36,13 +36,13 @@ export default function Page() {
   };
 
   const supabaseRes = useMemo<AuthResponse | undefined>(() => {
-    if (!state.supabaseResponse) return undefined;
+    if (!state.authResultJSON) return undefined;
     try {
-      return JSON.parse(state.supabaseResponse);
+      return JSON.parse(state.authResultJSON);
     } catch {
       return undefined;
     }
-  }, [state.supabaseResponse]);
+  }, [state.authResultJSON]);
   useEffect(() => {
     console.log(state, 51);
     console.log(supabaseRes, 52);

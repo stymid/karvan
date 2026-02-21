@@ -56,6 +56,6 @@ export async function createUser(
     attemptId: prevState.attemptId + 1,
     errors: {},
     values,
-    supabaseResponse: JSON.stringify(supabaseResult),
+    authResultJSON: JSON.stringify(supabaseResult),
   };
 }
