@@ -26,5 +26,5 @@ export type SignupFormState = {
   values: Partial<SignupFormData>;
   errors?: SignupErrors;
   success?: boolean;
-  supabaseResponse?: AuthResponse;
+  authResultJSON?: AuthResponse;
 };

@@ -14,12 +14,7 @@ import { createUser } from "./acion";
 import EmailInputCustom from "@/components/email-input-custom";
 import { addToast } from "@heroui/toast";
 import { getSupabaseAuthErrorMessage } from "@/utils/supabase/error-messages";
-import {
-  SignupErrors,
-  SignupFieldErrors,
-  SignupFormState,
-  signupInitialState,
-} from "./types";
+import { SignupErrors, SignupFieldErrors, signupInitialState } from "./types";
 import { AuthResponse } from "@supabase/supabase-js";
 
 export default function Page() {
@@ -30,7 +25,7 @@ export default function Page() {
   const [formErrors, setFormErrors] = useState<SignupErrors>(
     state?.errors ?? {},
   );
-  const [supabaseRes, setSupabaseRes] = useState<AuthResponse>();
+  const [authResponse, setAuthResponse] = useState<AuthResponse>();
 
   const changeErrorState = (key: SignupFieldErrors) => {
     setFormErrors((prev) => ({
@@ -40,26 +35,26 @@ export default function Page() {
   };
   useEffect(() => {
     if (state.errors) return setFormErrors(state.errors);
-    setSupabaseRes(state.supabaseResponse);
+    setAuthResponse(state.authResultJSON);
   }, [state]);
   console.log(state);
 
-  if (supabaseRes?.error?.code)
+  if (authResponse?.error?.code)
     addToast({
-      description: getSupabaseAuthErrorMessage(supabaseRes?.error?.code),
+      description: getSupabaseAuthErrorMessage(authResponse?.error?.code),
     });
-  else if (supabaseRes?.error?.name)
+  else if (authResponse?.error?.name)
     addToast({
-      description: supabaseRes.error.message,
+      description: authResponse.error.message,
     });
-  if (supabaseRes?.data.user?.id)
+  if (authResponse?.data.user?.id)
     return (
       <div>
         یک لنیک فعال سازی برای جیمیل شما ارسال شده
         <Link href="/signin"> وارد شوید</Link>
       </div>
     );
-  if (supabaseRes?.data.session?.user.aud === "authenticated")
+  if (authResponse?.data.session?.user.aud === "authenticated")
     <div>
       شما قبلن ثبت نام کرده اید و با موفقیت تایید شده اید.
       <Link href="/signin"> وارد شوید</Link>

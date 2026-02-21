@@ -56,6 +56,6 @@ export async function createUser(
     errors: {},
     values,
     success: true,
-    supabaseResponse: supabaseResult,
+    authResultJSON: supabaseResult,
   };
 }
