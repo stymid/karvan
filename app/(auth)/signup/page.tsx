@@ -7,9 +7,9 @@ import { Divider } from "@heroui/divider";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { Form } from "@heroui/form";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import PasswordInputCustom from "@/components/password-input-custom";
-import { createUser } from "./acion";
+import { createUser } from "./action";
 
 import EmailInputCustom from "@/components/email-input-custom";
 import { addToast } from "@heroui/toast";
@@ -25,7 +25,6 @@ export default function Page() {
   const [formErrors, setFormErrors] = useState<SignupErrors>(
     state?.errors ?? {},
   );
-  const [authResponse, setAuthResponse] = useState<AuthResponse>();
 
   const changeErrorState = (key: SignupFieldErrors) => {
     setFormErrors((prev) => ({
@@ -33,28 +32,41 @@ export default function Page() {
       [key]: undefined,
     }));
   };
-  useEffect(() => {
-    if (state.errors) return setFormErrors(state.errors);
-    setAuthResponse(state.authResultJSON);
-  }, [state]);
-  console.log(state);
 
-  if (authResponse?.error?.code)
+  ///
+  const authResult = useMemo<AuthResponse | undefined>(() => {
+    if (!state.authResultJSON) return undefined;
+    try {
+      return JSON.parse(state.authResultJSON);
+    } catch {
+      return undefined;
+    }
+  }, [state.authResultJSON]);
+
+  const lastToastedAttemptId = useRef<number>(0);
+
+  useEffect(() => {
+    // فقط وقتی attempt جدید اومده و خطا وجود داره
+    if (!authResult?.error) return;
+    if (lastToastedAttemptId.current === state.attemptId) return;
+
+    lastToastedAttemptId.current = state.attemptId;
+
+    const err = authResult.error;
     addToast({
-      description: getSupabaseAuthErrorMessage(authResponse?.error?.code),
+      description: err.code
+        ? getSupabaseAuthErrorMessage(err.code)
+        : (err.message ?? "خطای نامشخص"),
     });
-  else if (authResponse?.error?.name)
-    addToast({
-      description: authResponse.error.message,
-    });
-  if (authResponse?.data.user?.id)
+  }, [authResult, state.attemptId]);
+  if (authResult?.data.user?.id)
     return (
       <div>
         یک لنیک فعال سازی برای جیمیل شما ارسال شده
         <Link href="/signin"> وارد شوید</Link>
       </div>
     );
-  if (authResponse?.data.session?.user.aud === "authenticated")
+  if (authResult?.data.session?.user.aud === "authenticated")
     <div>
       شما قبلن ثبت نام کرده اید و با موفقیت تایید شده اید.
       <Link href="/signin"> وارد شوید</Link>

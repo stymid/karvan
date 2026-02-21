@@ -37,6 +37,7 @@ export async function createUser(
     });
 
     return {
+      attemptId: 1 + prevState.attemptId,
       values,
       errors,
     };
@@ -55,7 +56,7 @@ export async function createUser(
   return {
     errors: {},
     values,
-    success: true,
-    authResultJSON: supabaseResult,
+    authResultJSON: JSON.stringify(supabaseResult),
+    attemptId: 1 + prevState.attemptId,
   };
 }
