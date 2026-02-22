@@ -4,17 +4,19 @@ import { signupSchema } from "./schema";
 import { createClient } from "@/utils/supabase/server";
 import { AuthResponse } from "@supabase/supabase-js";
 import { SignupFormState } from "./types";
+import { headers } from "next/headers";
 
 export async function createUser(
   prevState: SignupFormState,
   formData: FormData,
 ): Promise<SignupFormState> {
-  const siteUrl =
-    process.env.VERCEL_ENV === "production"
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL}`
-      : process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000";
+  const h = await headers();
+  const proto = h.get("x-forwarded-proto") ?? "http";
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  if (!host) throw new Error("Missing host header");
+
+  const siteUrl = `${proto}://${host}`;
+
   const values = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
