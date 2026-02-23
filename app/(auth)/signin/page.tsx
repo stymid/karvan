@@ -15,8 +15,39 @@ import EmailInputCustom from "@/components/email-input-custom";
 import { SigninFieldName, signinInitialState } from "./types";
 import { addToast } from "@heroui/toast";
 
-import { getSigninErrorMessage } from "@/utils/supabase/error-messages";
+import { getSigninErrorMessage as getSigninErrorMessageByCode } from "@/utils/supabase/error-messages";
 import { useRouter } from "next/navigation";
+import { AuthError, AuthResponse } from "@supabase/supabase-js";
+
+export function getSigninErrorMessage(err?: AuthError) {
+  if (!err) return "خطای نامشخص رخ داد.";
+
+  // code
+  if (err.code) {
+    return getSigninErrorMessageByCode(err.code);
+  }
+
+  // status + message
+  const msg = (err.message ?? "").toLowerCase();
+
+  // credential
+  if (err.status === 400 || msg.includes("invalid login credentials")) {
+    return "ایمیل یا رمز عبور اشتباه است.";
+  }
+
+  // none confirmed email
+  if (msg.includes("email not confirmed")) {
+    return "ابتدا ایمیل خود را تایید کنید.";
+  }
+
+  // limits
+  if (err.status === 429 || msg.includes("too many")) {
+    return "تعداد درخواست‌ها زیاد است. چند لحظه بعد دوباره تلاش کنید.";
+  }
+
+  // public fallback
+  return "ورود ناموفق بود. دوباره تلاش کنید.";
+}
 
 export default function Page() {
   const router = useRouter();
@@ -48,13 +79,12 @@ export default function Page() {
       router.push("/");
     }
 
-    if (state.supabaseResponse?.error?.code)
+    if (state.supabaseResponse?.error)
       addToast({
-        description: getSigninErrorMessage(state.supabaseResponse.error.code),
+        description: getSigninErrorMessage(state.supabaseResponse.error),
         color: "danger",
       });
   }, [state]);
-  console.log(state);
 
   return (
     <>

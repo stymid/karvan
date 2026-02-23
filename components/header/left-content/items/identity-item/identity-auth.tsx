@@ -15,10 +15,63 @@ import { PlusIcon } from "@/components/icons/plus-icon";
 import Avatar from "@/components/header/avatar";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { QueryResult, QueryData, QueryError } from "@supabase/supabase-js";
+import WorkStatus, { StatusWork } from "@/components/work-status";
+import WorkStatusSkeleton from "@/components/work-status-skeleton";
+import UserSkeleton from "@/components/user-skeleton";
+import AvatarSkeleton from "@/components/avatar-skeleton";
 
 export default function IdentityAuth() {
-  const router = useRouter();
+  const [avatarSrc, setAvatarSrc] = useState<string>();
+  const [fullname, setFullname] = useState<string>();
+  const [username, setUsername] = useState<string>();
+  const [workStatus, setworkStatus] = useState<StatusWork>();
+  const [pending, setPending] = useState<boolean>();
 
+  const router = useRouter();
+  useEffect(() => {
+    setPending(true);
+    async function getAvatarUrl() {
+      const supabase = createClient();
+      const query = supabase
+        .from("profiles")
+        .select("first_name,last_name,avatar_url,username,work_status")
+        .limit(1);
+      type ProfileRow = QueryData<typeof query>[number];
+
+      const { data, error } = await query;
+      if (error) {
+        setPending(false);
+        return;
+      }
+      const row: ProfileRow | undefined = data?.[0];
+      const path = row?.avatar_url;
+      const tempFullname = row?.first_name + " " + row?.last_name;
+      const tempUsername = row?.username;
+      const tempWorkStatus = row?.work_status;
+
+      console.log(row);
+
+      if (path) {
+        const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+        console.log(data);
+
+        setAvatarSrc(data.publicUrl);
+        setPending(false);
+      }
+      if (tempFullname) {
+        setFullname(tempFullname);
+      }
+      if (tempUsername) {
+        setUsername(tempUsername);
+      }
+      if (tempWorkStatus) {
+        setworkStatus(tempWorkStatus);
+      }
+    }
+    getAvatarUrl();
+  }, []);
   return (
     <NavbarItem className="flex gap-2 items-center">
       <Dropdown
@@ -30,12 +83,12 @@ export default function IdentityAuth() {
       >
         <DropdownTrigger>
           <Button
-            className="border-none bg-transparent data-[hover=true]:!bg-transparent"
+            className="border-none bg-transparent data-[hover=true]:!bg-transparent "
             disableRipple
             isIconOnly
             variant="ghost"
           >
-            <Avatar />
+            <Avatar pending={pending} src={avatarSrc} />
           </Button>
         </DropdownTrigger>
         <DropdownMenu
@@ -62,26 +115,36 @@ export default function IdentityAuth() {
               isReadOnly
               className="h-14 gap-2 opacity-100"
             >
-              <User
-                avatarProps={{
-                  size: "sm",
-                  src: "https://avatars.githubusercontent.com/u/30373425?v=4",
-                }}
-                classNames={{
-                  name: "text-default-600",
-                  description: "text-default-500",
-                }}
-                description="@jrgarciadev"
-                name="Junior Garcia"
-              />
+              {pending ? (
+                <UserSkeleton />
+              ) : (
+                <User
+                  avatarProps={{
+                    size: "sm",
+                    src: avatarSrc || "",
+                  }}
+                  classNames={{
+                    base: "flex gap-3",
+                    name: "text-default-600",
+                    description: "text-default-500",
+                  }}
+                  dir="ltr"
+                  description={"@" + username}
+                  name={fullname}
+                />
+              )}
             </DropdownItem>
-            <DropdownItem key="dashboard">Dashboard</DropdownItem>
-            <DropdownItem key="settings">Settings</DropdownItem>
-            <DropdownItem
-              key="new_project"
-              endContent={<PlusIcon className="text-large" />}
-            >
-              New Project
+            <DropdownItem key="status">
+              {workStatus ? (
+                <WorkStatus status={workStatus} />
+              ) : (
+                <WorkStatusSkeleton />
+              )}
+            </DropdownItem>
+            <DropdownItem key="dashboard">داشبورد</DropdownItem>
+            <DropdownItem key="settings">تنظیمات</DropdownItem>
+            <DropdownItem key="new_project">
+              <span className="flex flex-row gap-0">پروژه جدید</span>
             </DropdownItem>
           </DropdownSection>
 

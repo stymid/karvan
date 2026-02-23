@@ -1,12 +1,21 @@
 import { Avatar as HeroUIAvatar } from "@heroui/avatar";
+import AvatarSkeleton from "../avatar-skeleton";
 
-const Avatar = () => {
+const Avatar = ({
+  src,
+  pending = false,
+}: {
+  src?: string;
+  pending?: boolean;
+}) => {
   return (
     <HeroUIAvatar
+      fallback={<AvatarSkeleton />}
       size="sm"
       isBordered
       color="success"
-      src="https://i.pravatar.cc/150?u=a04258114e29026302d"
+      src={src}
+      showFallback={pending}
     />
   );
 };

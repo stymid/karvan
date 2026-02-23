@@ -5,9 +5,9 @@ import IdentityGuest from "./identity-guest";
 const IdentityGate = async () => {
   const supabase = await createClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  return session?.user.id ? <IdentityAuth /> : <IdentityGuest />;
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user?.id ? <IdentityAuth /> : <IdentityGuest />;
 };
 
 export default IdentityGate;

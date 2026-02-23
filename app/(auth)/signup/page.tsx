@@ -22,6 +22,7 @@ export default function Page() {
     createUser,
     signupInitialState,
   );
+  console.log(state, 25);
   const [formErrors, setFormErrors] = useState<SignupErrors>(
     state?.errors ?? {},
   );
@@ -33,7 +34,6 @@ export default function Page() {
     }));
   };
 
-  ///
   const authResult = useMemo<AuthResponse | undefined>(() => {
     if (!state.authResultJSON) return undefined;
     try {
@@ -62,7 +62,10 @@ export default function Page() {
   if (authResult?.data.user?.id)
     return (
       <div>
-        یک لنیک فعال سازی برای جیمیل شما ارسال شده
+        اگر قبلن با این ایمیل اکانت داشته اید لطفن وارد شوید اگر نه یک لنیک فعال
+        سازی برای جیمیل شما ارسال شده و باید اقدام به فعالسازی بکنید. لطفن ایمیل
+        خودرا چک کنید.
+        <Link href="https://mail.google.com/mail/u/0/#inbox">gmail</Link>
         <Link href="/signin"> وارد شوید</Link>
       </div>
     );
