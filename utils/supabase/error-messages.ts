@@ -1,3 +1,5 @@
+import { AuthError } from "@supabase/supabase-js";
+
 export type AuthErrorCode =
   | "unexpected_failure"
   | "validation_failed"
@@ -188,7 +190,7 @@ export const SIGNIN_ERROR_MESSAGES: Record<SigninErrorCode, string> = {
 
   unexpected_failure: "خطای غیرمنتظره‌ای رخ داده است",
 };
-export function getSigninErrorMessage(errorCode?: string | null): string {
+export function getSigninErrorMessageByCode(errorCode?: string | null): string {
   if (!errorCode) {
     return "خطای نامشخصی رخ داده است";
   }
@@ -197,4 +199,34 @@ export function getSigninErrorMessage(errorCode?: string | null): string {
     SIGNIN_ERROR_MESSAGES[errorCode as SigninErrorCode] ??
     "خطای نامشخصی رخ داده است"
   );
+}
+
+export function getSigninErrorMessage(err?: AuthError) {
+  if (!err) return "خطای نامشخص رخ داد.";
+
+  // code
+  if (err.code) {
+    return getSigninErrorMessageByCode(err.code);
+  }
+
+  // status + message
+  const msg = (err.message ?? "").toLowerCase();
+
+  // credential
+  if (err.status === 400 || msg.includes("invalid login credentials")) {
+    return "ایمیل یا رمز عبور اشتباه است.";
+  }
+
+  // none confirmed email
+  if (msg.includes("email not confirmed")) {
+    return "ابتدا ایمیل خود را تایید کنید.";
+  }
+
+  // limits
+  if (err.status === 429 || msg.includes("too many")) {
+    return "تعداد درخواست‌ها زیاد است. چند لحظه بعد دوباره تلاش کنید.";
+  }
+
+  // public fallback
+  return "ورود ناموفق بود. دوباره تلاش کنید.";
 }
